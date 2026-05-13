@@ -27,6 +27,11 @@
         html {
             scroll-behavior: smooth;
         }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--punk-purple); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
 
         body {
             font-family: 'Outfit', sans-serif;
@@ -580,6 +585,95 @@
             
             .contact-links a { width: 40px; height: 40px; font-size: 1.2rem; }
         }
+
+        /* Overhaul Additions */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .project-card {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 153, 204, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .project-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,153,204,0.1), transparent);
+            transform: skewX(-20deg); transition: 0.5s;
+        }
+        .project-card:hover::before { left: 150%; }
+        .project-card:hover {
+            border-color: var(--cute-pink);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(255, 153, 204, 0.2);
+        }
+        .project-icon {
+            font-size: 2.5rem;
+            color: var(--cute-pink);
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+        .project-card:hover .project-icon { transform: scale(1.2) rotate(5deg); }
+        .project-card h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.2rem;
+        }
+        .project-card p { font-size: 0.95rem; margin: 0; }
+
+        .quote-section {
+            text-align: center;
+            padding: 4rem 1rem;
+            margin: 1rem 0;
+            position: relative;
+            z-index: 2;
+        }
+        .quote-icon {
+            font-size: 3rem;
+            color: rgba(0, 255, 136, 0.15);
+            margin-bottom: 1rem;
+        }
+        blockquote {
+            font-size: 1.6rem;
+            font-family: 'Fredoka', sans-serif;
+            color: var(--neon-green);
+            font-style: italic;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.4;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-top: 1px dashed rgba(157, 0, 255, 0.3);
+            color: var(--text-muted);
+            font-family: 'Fredoka', sans-serif;
+            position: relative;
+            z-index: 2;
+        }
+        footer i { color: var(--cute-pink); animation: pulse 2s infinite; }
     </style>
 </head>
 <body>
@@ -599,6 +693,7 @@
         <div class="nav-links">
             <a href="#perfil">Perfil</a>
             <a href="#formacion">Formación</a>
+            <a href="#proyectos">Proyectos</a>
             <a href="#competencias">Competencias</a>
             <a href="camila_cv_print.html" class="btn-cv" target="_blank"><i class="fa-solid fa-file-pdf"></i> Ver CV</a>
         </div>
@@ -626,7 +721,7 @@
             </div>
         </header>
 
-        <section class="card" id="perfil">
+        <section class="card reveal" id="perfil">
             <h2 class="section-title"><i class="fa-solid fa-user-doctor"></i> Perfil Profesional</h2>
             <p>
                 Nutricionista en formación por la <strong>Universidad Santo Tomás</strong>, actualmente desarrollando mi internado profesional. Mi formación abarca cuatro pilares fundamentales: <strong>Intervención Dietoterapéutica, Salud Pública, Gestión de Servicios de Alimentación e Investigación en Salud</strong>. Me especializo en la evaluación clínica y el abordaje nutricional integral a lo largo de todo el ciclo vital.
@@ -636,7 +731,12 @@
             </p>
         </section>
 
-        <section class="card" id="formacion">
+        <div class="quote-section reveal">
+            <i class="fa-solid fa-quote-left quote-icon"></i>
+            <blockquote>"La nutrición no se trata de restricciones que asustan, sino de empoderar al paciente con ciencia, empatía y sin mitos."</blockquote>
+        </div>
+
+        <section class="card reveal" id="formacion">
             <h2 class="section-title"><i class="fa-solid fa-graduation-cap"></i> Formación y Experiencia</h2>
             <div class="timeline">
                 <div class="timeline-item">
@@ -654,7 +754,28 @@
             </div>
         </section>
 
-        <section class="card" id="competencias">
+        <section class="card reveal" id="proyectos">
+            <h2 class="section-title"><i class="fa-solid fa-flask-vial"></i> Intervenciones & Proyectos</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-icon"><i class="fa-solid fa-apple-whole"></i></div>
+                    <h3>Taller de Etiquetado</h3>
+                    <p>Educación comunitaria para interpretar sellos y elegir alimentos de forma consciente y responsable.</p>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon"><i class="fa-solid fa-utensils"></i></div>
+                    <h3>Gestión Institucional</h3>
+                    <p>Diseño y evaluación de minutas alimentarias para servicios de alimentación masiva.</p>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
+                    <h3>Salud Pública</h3>
+                    <p>Operativos de evaluación nutricional enfocados en la intervención temprana y equidad en salud.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card reveal" id="competencias">
             <h2 class="section-title"><i class="fa-solid fa-dna"></i> Competencias Clínicas</h2>
             <div class="skills">
                 <span class="skill-tag">Intervención Dietoterapéutica 🩺</span>
@@ -667,9 +788,27 @@
                 <span class="skill-tag">Bromatología 🔬</span>
             </div>
         </section>
+
+        <footer>
+            <p>© 2026 Camila Olivares Arce. Diseñado con <i class="fa-solid fa-heart"></i> y estética Horror Punk.</p>
+        </footer>
     </div>
 
     <script>
+        // Scroll Reveal Logic
+        function reveal() {
+            const reveals = document.querySelectorAll(".reveal");
+            const windowHeight = window.innerHeight;
+            reveals.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < windowHeight - 100) {
+                    el.classList.add("active");
+                }
+            });
+        }
+        window.addEventListener("scroll", reveal);
+        reveal();
+
         // Interactive glow effect following mouse on cards
         document.querySelectorAll('.card').forEach(card => {
             card.addEventListener('mousemove', e => {
