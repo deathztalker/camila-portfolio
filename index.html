@@ -905,6 +905,83 @@
             50% { transform: scale(1) rotate(0deg); color: var(--punk-purple); text-shadow: 0 0 5px var(--punk-purple); }
             75% { transform: scale(1.2) rotate(10deg); color: black; text-shadow: 0 0 15px var(--neon-green); }
         }
+        
+        /* Punk Tables UI */
+        .punk-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+            color: white;
+            font-family: 'Outfit', sans-serif;
+        }
+        .punk-table th {
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Fredoka', sans-serif;
+        }
+        .punk-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .punk-table tbody tr:hover td {
+            background: rgba(0, 255, 136, 0.05);
+            color: var(--neon-green);
+        }
+        .punk-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .badge-normal { background: rgba(0,255,136,0.1); color: var(--neon-green); border: 1px solid var(--neon-green); }
+        .badge-warning { background: rgba(157,0,255,0.1); color: #d080ff; border: 1px solid var(--punk-purple); }
+        .badge-danger { background: rgba(255,0,85,0.1); color: var(--cute-pink); border: 1px solid var(--cute-pink); }
+        
+        .table-container {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(0,255,136,0.2);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: 0.3s;
+        }
+        .table-container:hover {
+            border-color: var(--neon-green);
+            box-shadow: 0 4px 20px rgba(0,255,136,0.15);
+        }
+        .table-container h4 {
+            background: rgba(0,255,136,0.05);
+            margin: 0;
+            padding: 12px 15px;
+            color: white;
+            font-family: 'Fredoka', sans-serif;
+            border-bottom: 1px solid rgba(0,255,136,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .res-box {
+            background: var(--bg-dark);
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            border-bottom: 3px solid var(--neon-green);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+        }
+        .res-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,255,136,0.1);
+        }
     </style>
 </head>
 <body>
@@ -1303,99 +1380,99 @@
 
                     <!-- TAB 5: Tablas de Referencia -->
                     <div id="tab-tables" class="tab-content">
-                        <h3 style="color:var(--neon-green); font-family:'Fredoka', sans-serif; margin-top:0;">Tablas de Referencia Clínica</h3>
-                        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Valores oficiales (MINSAL/OMS) para consulta rápida durante la atención.</p>
+                        <h3 style="color:var(--neon-green); font-family:'Fredoka', sans-serif; margin-top:0;"><i class="fa-solid fa-book-medical"></i> Biblioteca Clínica</h3>
+                        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Guía rápida de criterios diagnósticos actualizados para evaluación inmediata.</p>
                         
-                        <div style="background:var(--bg-dark); padding:10px; border:1px solid var(--st-green); border-radius:5px; margin-bottom:15px; overflow-x:auto;">
-                            <h4 style="color:white; margin-top:0; font-size:0.95rem;">Estado Nutricional (IMC)</h4>
-                            <table style="width:100%; border-collapse:collapse; font-size:0.8rem; text-align:left; color:white;">
+                        <div class="table-container">
+                            <h4><i class="fa-solid fa-weight-scale" style="color:var(--neon-green);"></i> Estado Nutricional (IMC)</h4>
+                            <table class="punk-table">
                                 <thead>
-                                    <tr style="border-bottom:1px solid var(--st-green); color:var(--neon-green);">
-                                        <th style="padding:5px;">Diagnóstico</th>
-                                        <th style="padding:5px;">Adulto (18-64)</th>
-                                        <th style="padding:5px;">Adulto Mayor (65+)</th>
+                                    <tr>
+                                        <th>Diagnóstico</th>
+                                        <th>Adulto (18-64)</th>
+                                        <th>Adulto Mayor (65+)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-                                        <td style="padding:5px;">Bajo Peso / Enflaquecido</td>
-                                        <td style="padding:5px;">< 18.5</td>
-                                        <td style="padding:5px;">< 23.0</td>
-                                    </tr>
-                                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-                                        <td style="padding:5px;">Normal</td>
-                                        <td style="padding:5px;">18.5 - 24.9</td>
-                                        <td style="padding:5px;">23.0 - 27.9</td>
-                                    </tr>
-                                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-                                        <td style="padding:5px;">Sobrepeso</td>
-                                        <td style="padding:5px;">25.0 - 29.9</td>
-                                        <td style="padding:5px;">28.0 - 31.9</td>
+                                    <tr>
+                                        <td><span class="punk-badge badge-warning">Bajo Peso</span></td>
+                                        <td>< 18.5</td>
+                                        <td>< 23.0</td>
                                     </tr>
                                     <tr>
-                                        <td style="padding:5px; color:var(--cute-pink);">Obesidad</td>
-                                        <td style="padding:5px;">≥ 30.0</td>
-                                        <td style="padding:5px;">≥ 32.0</td>
+                                        <td><span class="punk-badge badge-normal">Normal</span></td>
+                                        <td>18.5 - 24.9</td>
+                                        <td>23.0 - 27.9</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="punk-badge badge-warning">Sobrepeso</span></td>
+                                        <td>25.0 - 29.9</td>
+                                        <td>28.0 - 31.9</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="punk-badge badge-danger">Obesidad</span></td>
+                                        <td>≥ 30.0</td>
+                                        <td>≥ 32.0</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <div style="background:var(--bg-dark); padding:10px; border:1px solid var(--st-green); border-radius:5px; margin-bottom:15px; overflow-x:auto;">
-                            <h4 style="color:white; margin-top:0; font-size:0.95rem;">Riesgo Cardiovascular (Cintura)</h4>
-                            <table style="width:100%; border-collapse:collapse; font-size:0.8rem; text-align:left; color:white;">
+                        <div class="table-container">
+                            <h4><i class="fa-solid fa-heart-pulse" style="color:var(--cute-pink);"></i> Riesgo Cardiovascular (Cintura)</h4>
+                            <table class="punk-table">
                                 <thead>
-                                    <tr style="border-bottom:1px solid var(--st-green); color:var(--neon-green);">
-                                        <th style="padding:5px;">Riesgo</th>
-                                        <th style="padding:5px;">Hombres</th>
-                                        <th style="padding:5px;">Mujeres</th>
+                                    <tr>
+                                        <th>Riesgo</th>
+                                        <th>Hombres</th>
+                                        <th>Mujeres</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-                                        <td style="padding:5px;">Bajo Riesgo</td>
-                                        <td style="padding:5px;">< 90 cm</td>
-                                        <td style="padding:5px;">< 80 cm</td>
+                                    <tr>
+                                        <td><span class="punk-badge badge-normal">Bajo Riesgo</span></td>
+                                        <td>< 90 cm</td>
+                                        <td>< 80 cm</td>
                                     </tr>
                                     <tr>
-                                        <td style="padding:5px; color:var(--cute-pink);">Alto Riesgo</td>
-                                        <td style="padding:5px;">≥ 90 cm</td>
-                                        <td style="padding:5px;">≥ 80 cm</td>
+                                        <td><span class="punk-badge badge-danger">Alto Riesgo</span></td>
+                                        <td>≥ 90 cm</td>
+                                        <td>≥ 80 cm</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <div style="background:var(--bg-dark); padding:10px; border:1px solid var(--st-green); border-radius:5px; overflow-x:auto;">
-                            <h4 style="color:white; margin-top:0; font-size:0.95rem;">Presión Arterial (HTA MINSAL)</h4>
-                            <table style="width:100%; border-collapse:collapse; font-size:0.8rem; text-align:left; color:white;">
+                        <div class="table-container">
+                            <h4><i class="fa-solid fa-stethoscope" style="color:#00d0ff;"></i> Presión Arterial (HTA MINSAL)</h4>
+                            <table class="punk-table">
                                 <thead>
-                                    <tr style="border-bottom:1px solid var(--st-green); color:var(--neon-green);">
-                                        <th style="padding:5px;">Categoría</th>
-                                        <th style="padding:5px;">PAS (Sistólica)</th>
-                                        <th style="padding:5px;">PAD (Diastólica)</th>
+                                    <tr>
+                                        <th>Categoría</th>
+                                        <th>PAS (Sistólica)</th>
+                                        <th>PAD (Diastólica)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-                                        <td style="padding:5px;">Óptima</td>
-                                        <td style="padding:5px;">< 120</td>
-                                        <td style="padding:5px;">< 80</td>
-                                    </tr>
-                                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-                                        <td style="padding:5px;">Normal</td>
-                                        <td style="padding:5px;">120 - 129</td>
-                                        <td style="padding:5px;">80 - 84</td>
-                                    </tr>
-                                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-                                        <td style="padding:5px;">Normal Alta</td>
-                                        <td style="padding:5px;">130 - 139</td>
-                                        <td style="padding:5px;">85 - 89</td>
+                                    <tr>
+                                        <td><span class="punk-badge badge-normal">Óptima</span></td>
+                                        <td>< 120</td>
+                                        <td>< 80</td>
                                     </tr>
                                     <tr>
-                                        <td style="padding:5px; color:var(--cute-pink);">Hipertensión (HTA)</td>
-                                        <td style="padding:5px;">≥ 140</td>
-                                        <td style="padding:5px;">≥ 90</td>
+                                        <td><span class="punk-badge badge-normal" style="border-color:gray; color:white;">Normal</span></td>
+                                        <td>120 - 129</td>
+                                        <td>80 - 84</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="punk-badge badge-warning">Normal Alta</span></td>
+                                        <td>130 - 139</td>
+                                        <td>85 - 89</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="punk-badge badge-danger">Hipertensión</span></td>
+                                        <td>≥ 140</td>
+                                        <td>≥ 90</td>
                                     </tr>
                                 </tbody>
                             </table>
