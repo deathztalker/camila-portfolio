@@ -1100,6 +1100,14 @@
                                     <option value="1.725">Activo (Frenesí)</option>
                                 </select>
                             </div>
+                            <div class="input-group">
+                                <label>PA Sistólica (PAS)</label>
+                                <input type="number" id="p-pas" placeholder="mmHg (Ej. 120)">
+                            </div>
+                            <div class="input-group">
+                                <label>PA Diastólica (PAD)</label>
+                                <input type="number" id="p-pad" placeholder="mmHg (Ej. 80)">
+                            </div>
                         </div>
 
                         <div class="dashboard-results">
@@ -1116,6 +1124,10 @@
                                 <span>Riesgo CV / ICT</span>
                                 <strong id="out-cv" style="font-size: 1.1rem; margin-top: 5px;">--</strong>
                                 <small id="out-ict" style="color:var(--text-muted); display:block; margin-top:3px;">ICT: --</small>
+                            </div>
+                            <div class="res-box">
+                                <span>Presión Arterial</span>
+                                <strong id="out-bp" style="font-size: 1.1rem; margin-top: 5px;">--/--</strong>
                             </div>
                             <div class="res-box">
                                 <span>Req. Hídrico</span>
@@ -1305,7 +1317,7 @@
                 currentPatient = { 
                     name: "Paciente Anónimo", date: new Date().toLocaleDateString(), 
                     age: "-", gender: "-", weight: "-", height: "-", waist: "-", 
-                    imc: "-", status: "-", idealWeight: "-", cvRisk: "-", ict: "-", 
+                    imc: "-", status: "-", idealWeight: "-", cvRisk: "-", ict: "-", bp: "-", 
                     tmb: "-", kcal: "-", water: "-", macros: "-", 
                     fatPerc: "-", fatMass: "-", leanMass: "-", tfg: "-", kdigo: "-",
                     pathologies: "-", allergies: "-", diet: "-", liquids: "-", digestion: "-", obs: "-"
@@ -1352,10 +1364,10 @@
                 if(records.length === 0) return alert("No hay pacientes para exportar.");
                 
                 let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // BOM for UTF-8
-                csvContent += "Nombre,Fecha,Edad,Genero,Peso(kg),Altura(cm),Cintura(cm),IMC,Estado IMC,Peso Ideal(kg),Riesgo CV,ICT,TMB,Kcal Total,Agua,Macros(P/C/L),Grasa %,Masa Grasa(kg),Masa Magra(kg),TFG(ml/min),KDIGO,Patologias,Alergias,Dieta,Liquidos,Digestion,Observaciones\n";
+                csvContent += "Nombre,Fecha,Edad,Genero,Peso(kg),Altura(cm),Cintura(cm),IMC,Estado IMC,Peso Ideal(kg),Riesgo CV,ICT,Presion Arterial,TMB,Kcal Total,Agua,Macros(P/C/L),Grasa %,Masa Grasa(kg),Masa Magra(kg),TFG(ml/min),KDIGO,Patologias,Alergias,Dieta,Liquidos,Digestion,Observaciones\n";
                 
                 records.forEach(r => {
-                    const row = `"${r.name || '-'}","${r.date || '-'}","${r.age || '-'}","${r.gender || '-'}","${r.weight || '-'}","${r.height || '-'}","${r.waist || '-'}","${r.imc || '-'}","${r.status || '-'}","${r.idealWeight || '-'}","${r.cvRisk || '-'}","${r.ict || '-'}","${r.tmb || '-'}","${r.kcal || '-'}","${r.water || '-'}","${r.macros || '-'}","${r.fatPerc || '-'}","${r.fatMass || '-'}","${r.leanMass || '-'}","${r.tfg || '-'}","${r.kdigo || '-'}","${r.pathologies || '-'}","${r.allergies || '-'}","${r.diet || '-'}","${r.liquids || '-'}","${r.digestion || '-'}","${r.obs || '-'}"`;
+                    const row = `"${r.name || '-'}","${r.date || '-'}","${r.age || '-'}","${r.gender || '-'}","${r.weight || '-'}","${r.height || '-'}","${r.waist || '-'}","${r.imc || '-'}","${r.status || '-'}","${r.idealWeight || '-'}","${r.cvRisk || '-'}","${r.ict || '-'}","${r.bp || '-'}","${r.tmb || '-'}","${r.kcal || '-'}","${r.water || '-'}","${r.macros || '-'}","${r.fatPerc || '-'}","${r.fatMass || '-'}","${r.leanMass || '-'}","${r.tfg || '-'}","${r.kdigo || '-'}","${r.pathologies || '-'}","${r.allergies || '-'}","${r.diet || '-'}","${r.liquids || '-'}","${r.digestion || '-'}","${r.obs || '-'}"`;
                     csvContent += row + "\n";
                 });
 
@@ -1370,7 +1382,7 @@
         }
 
         // Auto-calculate CESFAM Dashboard on input
-        const scannerInputs = ['p-age', 'p-gender', 'p-weight', 'p-height', 'p-waist', 'p-activity'];
+        const scannerInputs = ['p-age', 'p-gender', 'p-weight', 'p-height', 'p-waist', 'p-activity', 'p-pas', 'p-pad'];
         scannerInputs.forEach(id => {
             const el = document.getElementById(id);
             if(el) el.addEventListener('input', () => { calculateDashboard(); calculateSports(); calculateClinical(); });
@@ -1476,6 +1488,27 @@
                 document.getElementById('out-cv').textContent = "--";
                 document.getElementById('out-cv').style.color = "white";
                 document.getElementById('out-ict').textContent = "ICT: --";
+            }
+
+            // Presión Arterial (MINSAL)
+            const pas = parseInt(document.getElementById('p-pas').value) || 0;
+            const pad = parseInt(document.getElementById('p-pad').value) || 0;
+            let bpStatus = "--", bpColor = "white";
+            
+            if(pas > 0 && pad > 0) {
+                if (pas >= 180 || pad >= 110) { bpStatus = "Crisis / Etapa 3"; bpColor = "red"; }
+                else if (pas >= 160 || pad >= 100) { bpStatus = "HTA Etapa 2"; bpColor = "red"; }
+                else if (pas >= 140 || pad >= 90) { bpStatus = "HTA Etapa 1"; bpColor = "red"; }
+                else if (pas >= 130 || pad >= 85) { bpStatus = "Normal Alta"; bpColor = "var(--punk-purple)"; }
+                else if (pas >= 120 || pad >= 80) { bpStatus = "Normal"; bpColor = "var(--neon-green)"; }
+                else if (pas < 90 || pad < 60) { bpStatus = "Hipotensión"; bpColor = "var(--cute-pink)"; }
+                else { bpStatus = "Óptima"; bpColor = "var(--neon-green)"; }
+                
+                document.getElementById('out-bp').innerHTML = `${pas}/${pad} <span style="display:block; font-size:0.85rem; color:${bpColor}; margin-top:3px;">${bpStatus}</span>`;
+                currentPatient.bp = `${pas}/${pad} (${bpStatus})`;
+            } else {
+                document.getElementById('out-bp').innerHTML = "--/-- <span style="display:block; font-size:0.85rem; color:var(--text-muted); margin-top:3px;">Esperando...</span>";
+                currentPatient.bp = "-";
             }
 
             // TMB & Kcal (Mifflin-St Jeor)
