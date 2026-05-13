@@ -76,7 +76,67 @@
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 7rem 2rem 2rem 2rem;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: rgba(15, 15, 19, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-brand {
+            font-family: 'Creepster', cursive;
+            color: var(--neon-green);
+            font-size: 1.5rem;
+            text-decoration: none;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px var(--punk-purple);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--cute-pink);
+        }
+
+        .btn-cv {
+            background: rgba(0, 105, 62, 0.2);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green) !important;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-cv:hover {
+            background: var(--neon-green);
+            color: var(--bg-dark) !important;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            transform: scale(1.05);
         }
 
         /* Hero Section */
@@ -304,16 +364,13 @@
         }
 
         .contact-links a:hover {
-            background: var(--neon-green);
-            color: var(--bg-dark);
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
         }
         
-        .contact-links a:nth-child(2):hover {
-            background: var(--cute-pink);
-            box-shadow: 0 5px 15px rgba(255, 153, 204, 0.3);
-        }
+        .contact-links a.email:hover { background: var(--neon-green); color: var(--bg-dark); box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3); border-color: var(--neon-green); }
+        .contact-links a.linkedin:hover { background: #0077b5; color: white; box-shadow: 0 5px 15px rgba(0, 119, 181, 0.3); border-color: #0077b5; }
+        .contact-links a.whatsapp:hover { background: #25D366; color: white; box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3); border-color: #25D366; }
+        .contact-links a.instagram:hover { background: var(--cute-pink); color: var(--bg-dark); box-shadow: 0 5px 15px rgba(255, 153, 204, 0.3); border-color: var(--cute-pink); }
 
         #particles {
             position: fixed;
@@ -332,11 +389,22 @@
         @media (max-width: 768px) {
             .glitch { font-size: 2.5rem; }
             .subtitle { font-size: 1.2rem; }
-            .container { padding: 1rem; }
+            .container { padding: 6rem 1rem 1rem 1rem; }
+            .nav-links a:not(.btn-cv) { display: none; }
         }
     </style>
 </head>
 <body>
+
+    <nav class="navbar">
+        <a href="#" class="nav-brand">Camila O.</a>
+        <div class="nav-links">
+            <a href="#perfil">Perfil</a>
+            <a href="#formacion">Formación</a>
+            <a href="#competencias">Competencias</a>
+            <a href="camila_cv_print.html" class="btn-cv" target="_blank"><i class="fa-solid fa-file-pdf"></i> Ver CV</a>
+        </div>
+    </nav>
 
     <i class="fa-solid fa-ghost floating-icon f1"></i>
     <i class="fa-solid fa-apple-whole floating-icon f2"></i>
@@ -353,13 +421,14 @@
             <h2 class="subtitle">Nutricionista en Formación 🍏💀</h2>
             
             <div class="contact-links">
-                <a href="#" title="Email"><i class="fa-solid fa-envelope"></i></a>
-                <a href="#" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-                <a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="mailto:camila@ejemplo.com" class="email" title="Email"><i class="fa-solid fa-envelope"></i></a>
+                <a href="#" class="linkedin" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="https://wa.me/56912345678" class="whatsapp" title="WhatsApp" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="#" class="instagram" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
             </div>
         </header>
 
-        <section class="card">
+        <section class="card" id="perfil">
             <h2 class="section-title"><i class="fa-solid fa-user-doctor"></i> Perfil Profesional</h2>
             <p>
                 Nutricionista en formación por la <strong>Universidad Santo Tomás</strong>, actualmente desarrollando mi internado profesional. Mi formación abarca cuatro pilares fundamentales: <strong>Intervención Dietoterapéutica, Salud Pública, Gestión de Servicios de Alimentación e Investigación en Salud</strong>. Me especializo en la evaluación clínica y el abordaje nutricional integral a lo largo de todo el ciclo vital.
@@ -369,7 +438,7 @@
             </p>
         </section>
 
-        <section class="card">
+        <section class="card" id="formacion">
             <h2 class="section-title"><i class="fa-solid fa-graduation-cap"></i> Formación y Experiencia</h2>
             <div class="timeline">
                 <div class="timeline-item">
@@ -387,7 +456,7 @@
             </div>
         </section>
 
-        <section class="card">
+        <section class="card" id="competencias">
             <h2 class="section-title"><i class="fa-solid fa-dna"></i> Competencias Clínicas</h2>
             <div class="skills">
                 <span class="skill-tag">Intervención Dietoterapéutica 🩺</span>
