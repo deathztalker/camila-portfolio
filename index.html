@@ -763,7 +763,7 @@
         }
         .project-card p { font-size: 0.95rem; margin: 0; }
 
-        /* Nutri-Tool Modal */
+        /* Nutri-Tool Modal (CESFAM Dashboard) */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
@@ -773,11 +773,11 @@
         .modal-overlay.active { opacity: 1; pointer-events: all; }
         
         .modal-content {
-            width: 95%; max-width: 550px;
+            width: 95%; max-width: 650px;
             background: var(--bg-card); border: 1px solid var(--neon-green);
             box-shadow: 0 0 30px rgba(0,255,136,0.2);
             position: relative; padding: 2rem; transform: scale(0.8); transition: all 0.3s ease;
-            max-height: 90vh; overflow-y: auto; cursor: auto;
+            max-height: 95vh; overflow-y: auto; cursor: auto;
         }
         .modal-overlay.active .modal-content { transform: scale(1); }
         
@@ -785,12 +785,12 @@
             position: absolute; top: 15px; right: 15px; background: none; border: none;
             color: var(--cute-pink); font-size: 1.5rem; transition: transform 0.3s;
         }
-        .close-btn:hover { transform: rotate(90deg) scale(1.2); text-shadow: 0 0 10px var(--cute-pink); cursor: crosshair; }
+        .close-btn:hover { transform: rotate(90deg) scale(1.2); text-shadow: 0 0 10px var(--cute-pink); cursor: pointer; }
         
         .tool-tabs { display: flex; gap: 5px; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 5px; border-bottom: 1px solid rgba(0,255,136,0.3); }
         .tab-btn { 
             background: transparent; border: none; color: var(--text-muted); 
-            padding: 10px 15px; cursor: crosshair; font-family: 'Fredoka', sans-serif;
+            padding: 10px 15px; cursor: pointer; font-family: 'Fredoka', sans-serif;
             transition: all 0.3s; white-space: nowrap; border-radius: 4px 4px 0 0; font-size: 0.95rem;
         }
         .tab-btn:hover { color: var(--neon-green); background: rgba(0,255,136,0.1); }
@@ -799,34 +799,46 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from{opacity:0; transform:translateY(5px);} to{opacity:1; transform:translateY(0);} }
 
-        .input-group { margin-bottom: 1rem; width: 100%; text-align: left; }
-        .input-group label { display: block; color: var(--st-green); font-size: 0.9rem; margin-bottom: 5px; font-family: 'Fredoka', sans-serif;}
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media(max-width: 500px) { .grid-inputs { grid-template-columns: 1fr; } }
+
+        .input-group { margin-bottom: 0.8rem; width: 100%; text-align: left; }
+        .input-group label { display: block; color: var(--st-green); font-size: 0.85rem; margin-bottom: 5px; font-family: 'Fredoka', sans-serif;}
         .input-group input, .input-group select { 
-            width: 100%; padding: 10px 12px; background: rgba(0,0,0,0.6); box-sizing: border-box;
+            width: 100%; padding: 8px 12px; background: rgba(0,0,0,0.6); box-sizing: border-box;
             border: 1px solid var(--punk-purple); color: white; border-radius: 4px;
             font-family: 'Outfit', sans-serif; transition: all 0.3s; cursor: text;
         }
         .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--neon-green); box-shadow: 0 0 10px rgba(0,255,136,0.3); }
         .input-group select option { background: var(--bg-dark); color: white; }
 
-        .nt-results { margin-top: 1.5rem; padding: 1rem; background: rgba(0,255,136,0.1); border-left: 4px solid var(--neon-green); border-radius: 4px;}
-        .nt-results h3 { color: var(--neon-green); margin-bottom: 10px; font-family: 'Fredoka', sans-serif;}
-        .nt-results p { margin: 5px 0; font-size: 1.1rem; font-family: 'Outfit', sans-serif;}
+        .dashboard-results { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;
+            background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px; border: 1px solid rgba(157, 0, 255, 0.3);
+        }
+        .res-box { 
+            background: rgba(0,255,136,0.05); padding: 10px; border-radius: 4px; text-align: center;
+            border-bottom: 2px solid var(--neon-green); display: flex; flex-direction: column; justify-content: center;
+        }
+        .res-box span { font-size: 0.8rem; color: var(--st-green); font-family: 'Fredoka', sans-serif; text-transform: uppercase; }
+        .res-box strong { font-size: 1.5rem; color: white; margin: 5px 0; font-family: 'Creepster', cursive; letter-spacing: 1px; transition: color 0.3s; }
+        .res-box small { font-size: 0.8rem; color: var(--text-muted); transition: color 0.3s; }
 
-        .nt-history { margin-top: 1rem; font-size: 0.9rem; max-height: 250px; overflow-y: auto; }
+        .nt-history { margin-top: 1rem; max-height: 350px; overflow-y: auto; }
         .nt-history ul { list-style: none; padding: 0; margin: 0; }
         .nt-history li { 
             background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); 
             padding: 10px; margin-bottom: 8px; border-radius: 4px;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .nt-history li .delete-record { color: var(--cute-pink); cursor: crosshair; font-size: 1.1rem; }
+        .nt-history li .delete-record { color: var(--cute-pink); cursor: pointer; font-size: 1.1rem; }
+        .nt-history li .delete-record:hover { transform: scale(1.2); }
 
         #open-nutritool {
             background: transparent; border: 1px solid var(--neon-green);
             color: var(--neon-green); border-radius: 50%; width: 40px; height: 40px;
             display: flex; justify-content: center; align-items: center;
-            transition: all 0.3s; animation: pulse-node 2s infinite; cursor: crosshair;
+            transition: all 0.3s; animation: pulse-node 2s infinite; cursor: pointer;
         }
         #open-nutritool:hover { background: var(--neon-green); color: var(--bg-dark); transform: scale(1.1) rotate(15deg); box-shadow: 0 0 15px var(--neon-green); }
 
@@ -1033,110 +1045,115 @@
             </div>
         </section>
 
-        <!-- Nutri-Tool Modal (Hub) -->
+        <!-- Nutri-Tool Modal (CESFAM Dashboard) -->
         <div id="nutritool-modal" class="modal-overlay">
             <div class="modal-content card">
                 <button id="close-nutritool" class="close-btn" title="Cerrar"><i class="fa-solid fa-xmark"></i></button>
-                <h2 class="section-title" style="margin-bottom: 0.5rem; font-size: 1.5rem;"><i class="fa-solid fa-vial-virus"></i> Terminal Nutri-Horror</h2>
+                <h2 class="section-title" style="margin-bottom: 0.5rem; font-size: 1.5rem;"><i class="fa-solid fa-laptop-medical"></i> Terminal Clínica CESFAM</h2>
                 
                 <div class="tool-tabs">
-                    <button class="tab-btn active" data-target="tab-imc"><i class="fa-solid fa-weight-scale"></i> IMC</button>
-                    <button class="tab-btn" data-target="tab-tmb"><i class="fa-solid fa-fire-flame-curved"></i> GEB</button>
-                    <button class="tab-btn" data-target="tab-water"><i class="fa-solid fa-droplet"></i> Hídrico</button>
-                    <button class="tab-btn" data-target="tab-history"><i class="fa-solid fa-folder-open"></i> Archivos</button>
+                    <button class="tab-btn active" data-target="tab-scanner"><i class="fa-solid fa-radar"></i> Escáner Rápido</button>
+                    <button class="tab-btn" data-target="tab-macros"><i class="fa-solid fa-chart-pie"></i> Macros</button>
+                    <button class="tab-btn" data-target="tab-history"><i class="fa-solid fa-server"></i> Base de Datos</button>
                 </div>
 
                 <div class="nutri-form">
-                    <!-- TAB 1: IMC -->
-                    <div id="tab-imc" class="tab-content active">
-                        <div class="input-group">
-                            <label>Sujeto de Prueba</label>
-                            <input type="text" id="nt-name" placeholder="Ej. Zombi #42">
-                        </div>
-                        <div style="display: flex; gap: 10px;">
-                            <div class="input-group">
-                                <label>Masa (kg)</label>
-                                <input type="number" id="nt-weight" placeholder="0.0">
+                    <!-- TAB 1: ESCANER DASHBOARD -->
+                    <div id="tab-scanner" class="tab-content active">
+                        <div class="grid-inputs">
+                            <div class="input-group" style="grid-column: span 2;">
+                                <label>Nombre del Paciente</label>
+                                <input type="text" id="p-name" placeholder="Ej. Juan Pérez">
                             </div>
                             <div class="input-group">
-                                <label>Altura (cm)</label>
-                                <input type="number" id="nt-height" placeholder="0.0">
+                                <label>Edad (Años)</label>
+                                <input type="number" id="p-age" placeholder="0" min="0">
                             </div>
-                        </div>
-                        
-                        <button id="nt-calculate" class="btn-cv" style="width: 100%; justify-content: center; margin-top: 10px; cursor: crosshair;">
-                            Escanear Mutación <i class="fa-solid fa-biohazard"></i>
-                        </button>
-                        
-                        <div id="nt-results" class="nt-results" style="display: none;">
-                            <h3>Reporte Bioquímico:</h3>
-                            <p>IMC Clínico: <strong id="nt-imc"></strong></p>
-                            <p>Diagnóstico: <strong id="nt-status"></strong></p>
-                            <button id="nt-save" class="btn-cv" style="width: 100%; justify-content: center; margin-top: 15px; background: rgba(157, 0, 255, 0.2); border-color: var(--punk-purple); color: var(--punk-purple) !important; cursor: crosshair;">
-                                Guardar en Archivo <i class="fa-solid fa-floppy-disk"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- TAB 2: GEB (Gasto Energético Basal) -->
-                    <div id="tab-tmb" class="tab-content">
-                        <div style="display: flex; gap: 10px;">
                             <div class="input-group">
-                                <label>Género</label>
-                                <select id="tmb-gender" class="nutri-select">
-                                    <option value="F">Femenino (Mutante X)</option>
-                                    <option value="M">Masculino (Mutante Y)</option>
+                                <label>Género Biológico</label>
+                                <select id="p-gender" class="nutri-select">
+                                    <option value="F">Femenino</option>
+                                    <option value="M">Masculino</option>
                                 </select>
                             </div>
                             <div class="input-group">
-                                <label>Edad</label>
-                                <input type="number" id="tmb-age" placeholder="0">
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 10px;">
-                            <div class="input-group">
-                                <label>Masa (kg)</label>
-                                <input type="number" id="tmb-weight" placeholder="0.0">
+                                <label>Peso (kg)</label>
+                                <input type="number" id="p-weight" placeholder="0.0">
                             </div>
                             <div class="input-group">
                                 <label>Altura (cm)</label>
-                                <input type="number" id="tmb-height" placeholder="0.0">
+                                <input type="number" id="p-height" placeholder="0.0">
+                            </div>
+                            <div class="input-group">
+                                <label>Cintura (cm) - Opcional</label>
+                                <input type="number" id="p-waist" placeholder="0.0">
+                            </div>
+                            <div class="input-group">
+                                <label>Factor de Actividad</label>
+                                <select id="p-activity" class="nutri-select">
+                                    <option value="1.2">Sedentario (Letargo)</option>
+                                    <option value="1.375">Ligero (1-3 días)</option>
+                                    <option value="1.55">Moderado (3-5 días)</option>
+                                    <option value="1.725">Activo (Frenesí)</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="input-group">
-                            <label>Factor de Actividad (Contagio)</label>
-                            <select id="tmb-activity" class="nutri-select">
-                                <option value="1.2">Sedentario (Letargo)</option>
-                                <option value="1.375">Ligero (Buscando Cerebros)</option>
-                                <option value="1.55">Moderado (Cazador Activo)</option>
-                                <option value="1.725">Fuerte (Frenesí Sangriento)</option>
-                            </select>
+
+                        <div class="dashboard-results">
+                            <div class="res-box">
+                                <span>IMC Clínico</span>
+                                <strong id="out-imc">--</strong>
+                                <small id="out-imc-status">Esperando datos...</small>
+                            </div>
+                            <div class="res-box">
+                                <span>Riesgo Cardiovasc.</span>
+                                <strong id="out-cv" style="font-size: 1.2rem; margin-top: 10px;">--</strong>
+                            </div>
+                            <div class="res-box">
+                                <span>GEB / Gasto Total</span>
+                                <strong id="out-kcal" style="font-size: 1.1rem; margin-top: 10px;">-- / -- kcal</strong>
+                            </div>
+                            <div class="res-box">
+                                <span>Req. Hídrico</span>
+                                <strong id="out-water">-- L</strong>
+                            </div>
                         </div>
-                        <button id="nt-calc-tmb" class="btn-cv" style="width: 100%; justify-content: center; margin-top: 5px; cursor: crosshair;">
-                            Calcular Energía <i class="fa-solid fa-bolt"></i>
+
+                        <button id="btn-save-patient" class="btn-cv" style="width: 100%; justify-content: center; margin-top: 15px; background: rgba(0, 255, 136, 0.1); border-color: var(--neon-green); cursor: pointer;">
+                            Guardar Ficha de Paciente <i class="fa-solid fa-floppy-disk"></i>
                         </button>
-                        <div id="tmb-results" class="nt-results" style="display: none;">
-                            <p id="tmb-result-text"></p>
+                    </div>
+
+                    <!-- TAB 2: MACROS -->
+                    <div id="tab-macros" class="tab-content">
+                        <div class="input-group">
+                            <label>Calorías Totales Objetivo (Kcal)</label>
+                            <input type="number" id="m-kcal" placeholder="Ej. 2000">
+                        </div>
+                        <div class="grid-inputs">
+                            <div class="input-group">
+                                <label>% Proteínas</label>
+                                <input type="number" id="m-pro" value="20">
+                            </div>
+                            <div class="input-group">
+                                <label>% Carbohidratos</label>
+                                <input type="number" id="m-cho" value="50">
+                            </div>
+                            <div class="input-group">
+                                <label>% Lípidos</label>
+                                <input type="number" id="m-lip" value="30">
+                            </div>
+                        </div>
+                        <div class="dashboard-results" style="grid-template-columns: 1fr 1fr 1fr;">
+                            <div class="res-box"><span>Proteínas (4 kcal/g)</span><strong id="out-g-pro">-- g</strong></div>
+                            <div class="res-box"><span>Carbohidratos (4 kcal/g)</span><strong id="out-g-cho">-- g</strong></div>
+                            <div class="res-box"><span>Lípidos (9 kcal/g)</span><strong id="out-g-lip">-- g</strong></div>
                         </div>
                     </div>
 
-                    <!-- TAB 3: Hídrico -->
-                    <div id="tab-water" class="tab-content">
-                        <div class="input-group">
-                            <label>Masa Corporal (kg)</label>
-                            <input type="number" id="water-weight" placeholder="Ej. 70">
-                        </div>
-                        <button id="nt-calc-water" class="btn-cv" style="width: 100%; justify-content: center; margin-top: 5px; cursor: crosshair;">
-                            Dosificar Suero <i class="fa-solid fa-flask"></i>
-                        </button>
-                        <div id="water-results" class="nt-results" style="display: none;">
-                            <p id="water-result-text"></p>
-                        </div>
-                    </div>
-
-                    <!-- TAB 4: Historial -->
+                    <!-- TAB 3: Base de Datos -->
                     <div id="tab-history" class="tab-content">
-                        <div id="nt-history" class="nt-history">
+                        <div class="nt-history">
                             <ul id="nt-history-list"></ul>
                         </div>
                     </div>
@@ -1165,7 +1182,7 @@
         window.addEventListener("scroll", reveal);
         reveal();
 
-        // Nutri-Tool Logic
+        // Nutri-Tool CESFAM Logic
         const modal = document.getElementById('nutritool-modal');
         const btnOpen = document.getElementById('open-nutritool');
         const btnClose = document.getElementById('close-nutritool');
@@ -1184,113 +1201,197 @@
             });
         });
 
-        // IMC Logic
-        const btnCalc = document.getElementById('nt-calculate');
-        const btnSave = document.getElementById('nt-save');
         const historyList = document.getElementById('nt-history-list');
-        let currentResult = null;
+        let currentPatient = null;
 
         function loadHistory() {
-            const records = JSON.parse(localStorage.getItem('nutriRecords') || '[]');
+            const records = JSON.parse(localStorage.getItem('cesfamRecords') || '[]');
             historyList.innerHTML = '';
             if(records.length === 0) {
-                historyList.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding: 1rem;">No hay archivos cifrados aún...</p>';
+                historyList.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding: 1rem;">No hay pacientes registrados aún...</p>';
                 return;
             }
             records.forEach((rec, index) => {
                 const li = document.createElement('li');
-                li.innerHTML = `<span><i class="fa-solid fa-skull" style="color:var(--cute-pink);font-size:0.8rem"></i> <b>${rec.name}</b>: IMC ${rec.imc}</span> <i class="fa-solid fa-trash delete-record" title="Purgar Archivo" onclick="deleteRecord(${index})"></i>`;
+                li.innerHTML = `
+                    <div style="flex-grow:1; line-height: 1.4;">
+                        <strong style="color:var(--neon-green); font-family:'Fredoka',sans-serif; font-size:1.1rem;">${rec.name}</strong> <small style="color:var(--text-muted);">(${rec.date})</small><br>
+                        <span style="font-size:0.85rem; color:white;">IMC: <b>${rec.imc}</b> (<span style="color:${rec.statusColor}">${rec.status}</span>)</span><br>
+                        <span style="font-size:0.85rem; color:var(--text-muted);">Kcal Total: ${rec.kcal} | Agua: ${rec.water}</span>
+                    </div>
+                    <i class="fa-solid fa-trash delete-record" title="Eliminar Ficha" onclick="deleteRecord(${index})" style="padding:10px;"></i>
+                `;
                 historyList.appendChild(li);
             });
         }
 
         window.deleteRecord = function(index) {
-            const records = JSON.parse(localStorage.getItem('nutriRecords') || '[]');
+            const records = JSON.parse(localStorage.getItem('cesfamRecords') || '[]');
             records.splice(index, 1);
-            localStorage.setItem('nutriRecords', JSON.stringify(records));
+            localStorage.setItem('cesfamRecords', JSON.stringify(records));
             loadHistory();
         };
 
-        if (btnCalc) {
-            btnCalc.addEventListener('click', () => {
-                const name = document.getElementById('nt-name').value || 'Sujeto Anónimo';
-                const w = parseFloat(document.getElementById('nt-weight').value);
-                const h = parseFloat(document.getElementById('nt-height').value) / 100;
+        // Auto-calculate CESFAM Dashboard on input
+        const scannerInputs = ['p-age', 'p-gender', 'p-weight', 'p-height', 'p-waist', 'p-activity'];
+        scannerInputs.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.addEventListener('input', calculateDashboard);
+        });
 
-                if(!w || !h || w <= 0 || h <= 0) {
-                    alert("¡Error en escaneo! Ingresa masa y altura válidas.");
-                    return;
+        function calculateDashboard() {
+            const name = document.getElementById('p-name').value || "Paciente Anónimo";
+            const age = parseInt(document.getElementById('p-age').value);
+            const gender = document.getElementById('p-gender').value;
+            const w = parseFloat(document.getElementById('p-weight').value);
+            const h = parseFloat(document.getElementById('p-height').value);
+            const waist = parseFloat(document.getElementById('p-waist').value) || 0;
+            const act = parseFloat(document.getElementById('p-activity').value);
+
+            // IMC & MINSAL Rules
+            let imc = 0, imcStatus = "Datos Incompletos", imcColor = "var(--text-muted)";
+            if(w > 0 && h > 0) {
+                const hM = h / 100;
+                imc = w / (hM * hM);
+                
+                if(age >= 65) {
+                    if(imc < 23) { imcStatus = "Enflaquecido (Riesgo)"; imcColor = "var(--cute-pink)"; }
+                    else if(imc < 28) { imcStatus = "Normal"; imcColor = "var(--neon-green)"; }
+                    else if(imc < 32) { imcStatus = "Sobrepeso"; imcColor = "var(--punk-purple)"; }
+                    else { imcStatus = "Obesidad"; imcColor = "red"; }
+                } else {
+                    if(imc < 18.5) { imcStatus = "Bajo Peso"; imcColor = "var(--cute-pink)"; }
+                    else if(imc < 25) { imcStatus = "Normal"; imcColor = "var(--neon-green)"; }
+                    else if(imc < 30) { imcStatus = "Sobrepeso"; imcColor = "var(--punk-purple)"; }
+                    else { imcStatus = "Obesidad"; imcColor = "red"; }
                 }
+                document.getElementById('out-imc').textContent = imc.toFixed(1);
+                document.getElementById('out-imc-status').textContent = imcStatus;
+                document.getElementById('out-imc-status').style.color = imcColor;
+                document.getElementById('out-imc').style.color = imcColor;
+            } else {
+                document.getElementById('out-imc').textContent = "--";
+                document.getElementById('out-imc-status').textContent = "Esperando datos...";
+                document.getElementById('out-imc-status').style.color = "var(--text-muted)";
+                document.getElementById('out-imc').style.color = "white";
+            }
 
-                const imc = (w / (h * h)).toFixed(1);
-                let status = "";
-                let color = "";
+            // Riesgo CV (Waist circumference)
+            let cvStatus = "--", cvColor = "white";
+            if(waist > 0) {
+                if(gender === 'F') {
+                    if(waist <= 80) { cvStatus = "Normal"; cvColor = "var(--neon-green)"; }
+                    else if(waist <= 88) { cvStatus = "Alto"; cvColor = "var(--punk-purple)"; }
+                    else { cvStatus = "Muy Alto"; cvColor = "red"; }
+                } else {
+                    if(waist <= 94) { cvStatus = "Normal"; cvColor = "var(--neon-green)"; }
+                    else if(waist <= 102) { cvStatus = "Alto"; cvColor = "var(--punk-purple)"; }
+                    else { cvStatus = "Muy Alto"; cvColor = "red"; }
+                }
+                document.getElementById('out-cv').textContent = cvStatus;
+                document.getElementById('out-cv').style.color = cvColor;
+            } else {
+                document.getElementById('out-cv').textContent = "--";
+                document.getElementById('out-cv').style.color = "white";
+            }
 
-                if(imc < 18.5) { status = "Bajo Peso (Riesgo Zombi)"; color = "var(--cute-pink)"; }
-                else if(imc >= 18.5 && imc < 25) { status = "Normal (Superviviente)"; color = "var(--neon-green)"; }
-                else if(imc >= 25 && imc < 30) { status = "Sobrepeso (Mutación Leve)"; color = "var(--punk-purple)"; }
-                else { status = "Obesidad (Alerta Tóxica)"; color = "red"; }
+            // TMB & Kcal (Mifflin-St Jeor)
+            let tmb = 0, totalKcal = 0;
+            if(w > 0 && h > 0 && age > 0) {
+                if(gender === 'M') tmb = (10 * w) + (6.25 * h) - (5 * age) + 5;
+                else tmb = (10 * w) + (6.25 * h) - (5 * age) - 161;
+                
+                totalKcal = tmb * act;
+                document.getElementById('out-kcal').textContent = `${tmb.toFixed(0)} / ${totalKcal.toFixed(0)} kcal`;
+                document.getElementById('out-kcal').style.color = "var(--cute-pink)";
+                
+                // Autofill Macros
+                document.getElementById('m-kcal').value = totalKcal.toFixed(0);
+                calculateMacros();
+            } else {
+                document.getElementById('out-kcal').textContent = "-- / -- kcal";
+                document.getElementById('out-kcal').style.color = "white";
+            }
 
-                document.getElementById('nt-imc').textContent = imc;
-                document.getElementById('nt-status').textContent = status;
-                document.getElementById('nt-status').style.color = color;
-                document.getElementById('nt-results').style.display = 'block';
+            // Water requirement
+            let waterText = "-- L";
+            if(w > 0) {
+                const factor = (age >= 65) ? 30 : 35;
+                const water = (w * factor) / 1000;
+                waterText = `${water.toFixed(1)} L`;
+                document.getElementById('out-water').textContent = waterText;
+                document.getElementById('out-water').style.color = "#00d0ff"; // Blueish
+            } else {
+                document.getElementById('out-water').textContent = "-- L";
+                document.getElementById('out-water').style.color = "white";
+            }
 
-                currentResult = { name, imc, status };
+            if(w > 0 && h > 0) {
+                currentPatient = {
+                    name: name,
+                    date: new Date().toLocaleDateString(),
+                    imc: imc.toFixed(1),
+                    status: imcStatus,
+                    statusColor: imcColor,
+                    kcal: totalKcal > 0 ? `${totalKcal.toFixed(0)} kcal` : "-",
+                    water: waterText
+                };
+            } else {
+                currentPatient = null;
+            }
+        }
+
+        // Save Patient
+        const btnSavePatient = document.getElementById('btn-save-patient');
+        if(btnSavePatient) {
+            btnSavePatient.addEventListener('click', () => {
+                if(!currentPatient) return alert("Ingresa peso y altura válidos primero.");
+                const records = JSON.parse(localStorage.getItem('cesfamRecords') || '[]');
+                records.push(currentPatient);
+                localStorage.setItem('cesfamRecords', JSON.stringify(records));
+                loadHistory();
+                
+                const originalText = btnSavePatient.innerHTML;
+                btnSavePatient.innerHTML = '¡Ficha Guardada con Éxito! <i class="fa-solid fa-check"></i>';
+                btnSavePatient.style.background = "var(--neon-green)";
+                btnSavePatient.style.color = "var(--bg-dark)";
+                setTimeout(() => { 
+                    btnSavePatient.innerHTML = originalText; 
+                    btnSavePatient.style.background = "rgba(0, 255, 136, 0.1)";
+                    btnSavePatient.style.color = "white";
+                }, 2000);
             });
         }
 
-        if (btnSave) {
-            btnSave.addEventListener('click', () => {
-                if(!currentResult) return;
-                const records = JSON.parse(localStorage.getItem('nutriRecords') || '[]');
-                records.push(currentResult);
-                localStorage.setItem('nutriRecords', JSON.stringify(records));
-                loadHistory();
-                btnSave.innerHTML = '¡Archivo Cifrado! <i class="fa-solid fa-check"></i>';
-                setTimeout(() => { btnSave.innerHTML = 'Guardar en Archivo <i class="fa-solid fa-floppy-disk"></i>'; }, 2000);
-            });
+        // Macros Logic
+        const macroInputs = ['m-kcal', 'm-pro', 'm-cho', 'm-lip'];
+        macroInputs.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.addEventListener('input', calculateMacros);
+        });
+
+        function calculateMacros() {
+            const kcal = parseFloat(document.getElementById('m-kcal').value);
+            const pPro = parseFloat(document.getElementById('m-pro').value) || 0;
+            const pCho = parseFloat(document.getElementById('m-cho').value) || 0;
+            const pLip = parseFloat(document.getElementById('m-lip').value) || 0;
+
+            if(kcal > 0 && Math.abs((pPro + pCho + pLip) - 100) < 0.1) {
+                const gPro = (kcal * (pPro / 100)) / 4;
+                const gCho = (kcal * (pCho / 100)) / 4;
+                const gLip = (kcal * (pLip / 100)) / 9;
+
+                document.getElementById('out-g-pro').textContent = gPro.toFixed(0) + " g";
+                document.getElementById('out-g-cho').textContent = gCho.toFixed(0) + " g";
+                document.getElementById('out-g-lip').textContent = gLip.toFixed(0) + " g";
+            } else {
+                document.getElementById('out-g-pro').textContent = "--";
+                document.getElementById('out-g-cho').textContent = "--";
+                document.getElementById('out-g-lip').textContent = "--";
+            }
         }
 
         loadHistory();
-
-        // GEB / TMB Logic
-        const btnCalcTmb = document.getElementById('nt-calc-tmb');
-        if (btnCalcTmb) {
-            btnCalcTmb.addEventListener('click', () => {
-                const w = parseFloat(document.getElementById('tmb-weight').value);
-                const h = parseFloat(document.getElementById('tmb-height').value);
-                const a = parseInt(document.getElementById('tmb-age').value);
-                const gender = document.getElementById('tmb-gender').value;
-                const activity = parseFloat(document.getElementById('tmb-activity').value);
-
-                if(!w || !h || !a) return alert("Faltan datos vitales para el cálculo energético.");
-
-                let tmb = 0;
-                if(gender === 'M') {
-                    tmb = (10 * w) + (6.25 * h) - (5 * a) + 5; // Mifflin-St Jeor is better modern standard
-                } else {
-                    tmb = (10 * w) + (6.25 * h) - (5 * a) - 161;
-                }
-                const totalKcal = (tmb * activity).toFixed(0);
-
-                document.getElementById('tmb-result-text').innerHTML = `Gasto Basal (Mifflin): <strong style="color:var(--neon-green)">${tmb.toFixed(0)} kcal</strong><br>Req. Total (Mantenimiento): <strong style="color:var(--cute-pink); font-size:1.2rem;">${totalKcal} kcal</strong>`;
-                document.getElementById('tmb-results').style.display = 'block';
-            });
-        }
-
-        // Hydration Logic
-        const btnCalcWater = document.getElementById('nt-calc-water');
-        if (btnCalcWater) {
-            btnCalcWater.addEventListener('click', () => {
-                const w = parseFloat(document.getElementById('water-weight').value);
-                if(!w) return alert("Se requiere la masa corporal del sujeto.");
-                const ml = w * 35; // 35ml per kg
-                const liters = (ml / 1000).toFixed(2);
-                document.getElementById('water-result-text').innerHTML = `Dosis Hídrica Diaria:<br><strong style="color:var(--neon-green); font-size:1.5rem;">${liters} Litros</strong><br>(${ml} ml de suero)`;
-                document.getElementById('water-results').style.display = 'block';
-            });
-        }
 
         // Cat Easter Egg (Clicking the navbar cat)
         const creepyCat = document.querySelector('.creepy-cat');
