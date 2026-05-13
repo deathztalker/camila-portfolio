@@ -33,6 +33,12 @@
         ::-webkit-scrollbar-thumb { background: var(--punk-purple); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
 
+        ::selection {
+            background: var(--neon-green);
+            color: var(--bg-dark);
+            text-shadow: none;
+        }
+
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg-dark);
@@ -391,8 +397,10 @@
             left: 0;
             top: 0;
             height: 100%;
-            width: 2px;
-            background: var(--st-green);
+            width: 4px;
+            background: linear-gradient(to bottom, var(--neon-green), var(--punk-purple));
+            box-shadow: 0 0 10px var(--neon-green);
+            border-radius: 2px;
         }
 
         .timeline-item {
@@ -403,13 +411,21 @@
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -36px;
+            left: -37px;
             top: 5px;
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background: var(--bg-dark);
-            border: 2px solid var(--neon-green);
+            border: 3px solid var(--neon-green);
+            box-shadow: 0 0 10px var(--neon-green), inset 0 0 5px var(--neon-green);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover::before {
+            background: var(--neon-green);
+            transform: scale(1.3);
+            box-shadow: 0 0 20px var(--neon-green);
         }
 
         .timeline-date {
@@ -647,6 +663,30 @@
             transform: translateY(-5px);
             box-shadow: 0 5px 20px rgba(255, 153, 204, 0.2);
         }
+        .subtitle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--st-green);
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid var(--neon-green);
+            width: 37ch;
+            animation: typing 3s steps(37) forwards, blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 37ch }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--neon-green) }
+        }
         .project-icon {
             font-size: 2.5rem;
             color: var(--cute-pink);
@@ -683,6 +723,21 @@
             max-width: 800px;
             margin: 0 auto;
             line-height: 1.4;
+        }
+
+        .ecg-line {
+            width: 100%;
+            height: 50px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 50'%3E%3Cpath d='M0,25 L100,25 L120,5 L140,45 L160,25 L500,25' fill='none' stroke='%2300ff88' stroke-width='2' filter='drop-shadow(0 0 5px %2300ff88)'/%3E%3C/svg%3E");
+            background-repeat: repeat-x;
+            background-size: 500px 50px;
+            animation: ecg-move 2.5s linear infinite;
+            opacity: 0.8;
+            margin: 1rem 0;
+        }
+        @keyframes ecg-move {
+            from { background-position: 0 0; }
+            to { background-position: -500px 0; }
         }
 
         footer {
@@ -732,10 +787,12 @@
                 <div class="avatar-bg"></div>
                 <img src="camila_avatar.png" alt="Camila Olivares" class="avatar">
             </div>
-            <h1 class="glitch">Camila Eugenia<br>Olivares Arce</h1>
-            <h2 class="subtitle">Nutricionista en Formación 🍏💀</h2>
+            <h1 class="glitch" data-text="Camila Olivares Arce">Camila Olivares Arce</h1>
+            <div class="subtitle-container">
+                <p class="subtitle">Nutrición, Ciencia y un poco de Caos</p>
+            </div>
             
-            <div class="contact-links">
+            <div class="contact-links" style="justify-content: center;">
                 <a href="mailto:cammeeramone@gmail.com" class="email" title="Email"><i class="fa-solid fa-envelope"></i></a>
                 <a href="#" class="linkedin" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
                 <a href="https://wa.me/56950978738" class="whatsapp" title="WhatsApp" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
@@ -808,6 +865,17 @@
                 <span class="skill-tag">Investigación Científica 📊</span>
                 <span class="skill-tag">Sostenibilidad Alimentaria 🌿</span>
                 <span class="skill-tag">Bromatología 🔬</span>
+            </div>
+        </section>
+
+        <section class="card reveal" id="contacto">
+            <h2 class="section-title"><i class="fa-solid fa-heart-pulse"></i> Signos Vitales (Contacto)</h2>
+            <div class="ecg-line"></div>
+            <p style="text-align: center; margin-top: 1rem; font-size: 1.2rem;">¿Lista para iniciar un tratamiento o un nuevo proyecto? Escríbeme y hagamos ciencia juntos.</p>
+            <div class="contact-links" style="justify-content: center; margin-top: 1.5rem;">
+                <a href="mailto:cammeeramone@gmail.com" class="email" title="Email"><i class="fa-solid fa-envelope"></i></a>
+                <a href="https://wa.me/56950978738" class="whatsapp" title="WhatsApp" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://www.instagram.com/camidelosgatos?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="instagram" title="Instagram" target="_blank"><i class="fa-brands fa-instagram"></i></a>
             </div>
         </section>
 
