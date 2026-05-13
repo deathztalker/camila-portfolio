@@ -243,8 +243,14 @@
         .btn-cv:hover {
             background: var(--neon-green);
             color: var(--bg-dark) !important;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            box-shadow: 0 0 20px var(--neon-green), 0 0 40px var(--neon-green);
             transform: scale(1.05);
+            animation: toxic-btn 1s infinite alternate;
+        }
+
+        @keyframes toxic-btn {
+            0% { border-color: var(--neon-green); box-shadow: 0 0 20px var(--neon-green); }
+            100% { border-color: var(--st-green); box-shadow: 0 0 40px var(--st-green), inset 0 0 10px var(--bg-dark); }
         }
 
         /* Hero Section */
@@ -301,6 +307,22 @@
             0% { transform: scale(1); opacity: 0.5; }
             50% { transform: scale(1.1); opacity: 0.8; }
             100% { transform: scale(1); opacity: 0.5; }
+        }
+
+        /* Glitch en Avatar al Hover */
+        .avatar:hover {
+            animation: avatar-glitch 0.15s infinite;
+            filter: contrast(150%) saturate(200%) hue-rotate(90deg);
+            cursor: crosshair;
+        }
+
+        @keyframes avatar-glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-6px, 6px) }
+            40% { transform: translate(-6px, -6px) }
+            60% { transform: translate(6px, 6px) }
+            80% { transform: translate(6px, -6px) }
+            100% { transform: translate(0) }
         }
 
         /* Cards (Glassmorphism) */
@@ -809,6 +831,39 @@
         window.addEventListener("scroll", reveal);
         reveal();
 
+        // Cat Easter Egg (Clicking the navbar cat)
+        const creepyCat = document.querySelector('.creepy-cat');
+        if(creepyCat) {
+            creepyCat.addEventListener('click', () => {
+                for(let i=0; i<8; i++) {
+                    setTimeout(() => {
+                        const paw = document.createElement('i');
+                        paw.className = 'fa-solid fa-paw';
+                        paw.style.color = Math.random() > 0.5 ? 'var(--neon-green)' : 'var(--cute-pink)';
+                        paw.style.fontSize = (Math.random() * 3 + 2) + 'rem';
+                        paw.style.position = 'fixed';
+                        paw.style.zIndex = '9999';
+                        paw.style.left = (Math.random() * 80 + 10) + 'vw';
+                        paw.style.top = (Math.random() * 80 + 10) + 'vh';
+                        paw.style.opacity = '0';
+                        paw.style.transform = `scale(0.1) rotate(${Math.random() * 60 - 30}deg)`;
+                        paw.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                        paw.style.textShadow = `0 0 15px ${paw.style.color}`;
+                        paw.style.pointerEvents = 'none';
+                        
+                        document.body.appendChild(paw);
+                        
+                        // Aparecer
+                        setTimeout(() => { paw.style.opacity = '1'; paw.style.transform = `scale(1) rotate(${Math.random() * 60 - 30}deg)`; }, 50);
+                        // Desvanecer
+                        setTimeout(() => { paw.style.opacity = '0'; paw.style.transform = 'scale(1.5)'; }, 800);
+                        // Eliminar
+                        setTimeout(() => { paw.remove(); }, 1300);
+                    }, i * 150);
+                }
+            });
+        }
+
         // Interactive glow effect following mouse on cards
         document.querySelectorAll('.card').forEach(card => {
             card.addEventListener('mousemove', e => {
@@ -832,7 +887,11 @@
         particlesContainer.id = 'particles';
         document.body.prepend(particlesContainer);
 
-        const icons = ['fa-skull', 'fa-apple-whole', 'fa-staff-snake', 'fa-ghost', 'fa-leaf', 'fa-bolt', 'fa-heart-pulse'];
+        const icons = [
+            'fa-skull', 'fa-apple-whole', 'fa-staff-snake', 'fa-ghost', 
+            'fa-leaf', 'fa-bolt', 'fa-heart-pulse', 'fa-paw', 'fa-syringe', 
+            'fa-bacterium', 'fa-fish'
+        ];
         const colors = ['var(--neon-green)', 'var(--cute-pink)', 'var(--punk-purple)', 'var(--st-green)'];
 
         const particles = [];
