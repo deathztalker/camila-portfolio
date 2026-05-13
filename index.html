@@ -1112,8 +1112,9 @@
                                 <strong id="out-ideal" style="font-size: 1.2rem; margin-top: 10px;">-- kg</strong>
                             </div>
                             <div class="res-box">
-                                <span>Riesgo Cardiovasc.</span>
-                                <strong id="out-cv" style="font-size: 1.2rem; margin-top: 10px;">--</strong>
+                                <span>Riesgo CV / ICT</span>
+                                <strong id="out-cv" style="font-size: 1.1rem; margin-top: 5px;">--</strong>
+                                <small id="out-ict" style="color:var(--text-muted); display:block; margin-top:3px;">ICT: --</small>
                             </div>
                             <div class="res-box">
                                 <span>Req. Hídrico</span>
@@ -1261,7 +1262,7 @@
                 currentPatient = { 
                     name: "Paciente Anónimo", date: new Date().toLocaleDateString(), 
                     age: "-", gender: "-", weight: "-", height: "-", waist: "-", 
-                    imc: "-", status: "-", idealWeight: "-", cvRisk: "-", 
+                    imc: "-", status: "-", idealWeight: "-", cvRisk: "-", ict: "-", 
                     tmb: "-", kcal: "-", water: "-", macros: "-", 
                     fatPerc: "-", fatMass: "-", leanMass: "-", tfg: "-", kdigo: "-" 
                 };
@@ -1307,10 +1308,10 @@
                 if(records.length === 0) return alert("No hay pacientes para exportar.");
                 
                 let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // BOM for UTF-8
-                csvContent += "Nombre,Fecha,Edad,Genero,Peso(kg),Altura(cm),Cintura(cm),IMC,Estado IMC,Peso Ideal(kg),Riesgo CV,TMB,Kcal Total,Agua,Macros(P/C/L),Grasa %,Masa Grasa(kg),Masa Magra(kg),TFG(ml/min),KDIGO\n";
+                csvContent += "Nombre,Fecha,Edad,Genero,Peso(kg),Altura(cm),Cintura(cm),IMC,Estado IMC,Peso Ideal(kg),Riesgo CV,ICT,TMB,Kcal Total,Agua,Macros(P/C/L),Grasa %,Masa Grasa(kg),Masa Magra(kg),TFG(ml/min),KDIGO\n";
                 
                 records.forEach(r => {
-                    const row = `"${r.name || '-'}","${r.date || '-'}","${r.age || '-'}","${r.gender || '-'}","${r.weight || '-'}","${r.height || '-'}","${r.waist || '-'}","${r.imc || '-'}","${r.status || '-'}","${r.idealWeight || '-'}","${r.cvRisk || '-'}","${r.tmb || '-'}","${r.kcal || '-'}","${r.water || '-'}","${r.macros || '-'}","${r.fatPerc || '-'}","${r.fatMass || '-'}","${r.leanMass || '-'}","${r.tfg || '-'}","${r.kdigo || '-'}"`;
+                    const row = `"${r.name || '-'}","${r.date || '-'}","${r.age || '-'}","${r.gender || '-'}","${r.weight || '-'}","${r.height || '-'}","${r.waist || '-'}","${r.imc || '-'}","${r.status || '-'}","${r.idealWeight || '-'}","${r.cvRisk || '-'}","${r.ict || '-'}","${r.tmb || '-'}","${r.kcal || '-'}","${r.water || '-'}","${r.macros || '-'}","${r.fatPerc || '-'}","${r.fatMass || '-'}","${r.leanMass || '-'}","${r.tfg || '-'}","${r.kdigo || '-'}"`;
                     csvContent += row + "\n";
                 });
 
@@ -1354,7 +1355,10 @@
                 const hM = h / 100;
                 imc = w / (hM * hM);
                 
-                if(age >= 65) {
+                if (age > 0 && age < 18) {
+                    imcStatus = "Usar Curvas OMS"; 
+                    imcColor = "var(--punk-purple)";
+                } else if(age >= 65) {
                     if(imc < 23) { imcStatus = "Enflaquecido"; imcColor = "var(--cute-pink)"; }
                     else if(imc < 28) { imcStatus = "Normal"; imcColor = "var(--neon-green)"; }
                     else if(imc < 32) { imcStatus = "Sobrepeso"; imcColor = "var(--punk-purple)"; }
@@ -1397,7 +1401,7 @@
             }
 
             // Riesgo CV (Waist circumference)
-            let cvStatus = "--", cvColor = "white";
+            let cvStatus = "--", cvColor = "white", ictVal = "--";
             if(waist > 0) {
                 if(gender === 'F') {
                     if(waist <= 80) { cvStatus = "Normal"; cvColor = "var(--neon-green)"; }
@@ -1408,12 +1412,26 @@
                     else if(waist <= 102) { cvStatus = "Alto"; cvColor = "var(--punk-purple)"; }
                     else { cvStatus = "Muy Alto"; cvColor = "red"; }
                 }
+                
+                if (h > 0) {
+                    const ict = waist / h;
+                    ictVal = ict.toFixed(2);
+                    let ictStatus = ict < 0.5 ? "Riesgo Bajo" : "Riesgo Alto";
+                    let ictCol = ict < 0.5 ? "var(--neon-green)" : "red";
+                    document.getElementById('out-ict').innerHTML = `ICT: <span style="color:${ictCol}">${ictVal} (${ictStatus})</span>`;
+                    currentPatient.ict = ictVal;
+                } else {
+                    document.getElementById('out-ict').textContent = "ICT: (Falta Altura)";
+                    currentPatient.ict = "-";
+                }
+
                 document.getElementById('out-cv').textContent = cvStatus;
                 document.getElementById('out-cv').style.color = cvColor;
                 currentPatient.cvRisk = cvStatus;
             } else {
                 document.getElementById('out-cv').textContent = "--";
                 document.getElementById('out-cv').style.color = "white";
+                document.getElementById('out-ict').textContent = "ICT: --";
             }
 
             // TMB & Kcal (Mifflin-St Jeor)
