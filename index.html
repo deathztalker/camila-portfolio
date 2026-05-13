@@ -110,6 +110,8 @@
             text-shadow: 2px 2px var(--punk-purple);
             animation: horror-brand 3s infinite alternate;
         }
+        
+        .mobile-name { display: none; }
 
         @keyframes horror-brand {
             0% { color: var(--neon-green); text-shadow: 2px 2px var(--punk-purple); transform: scale(1); }
@@ -425,6 +427,10 @@
             opacity: 0.15;
             z-index: -1;
             font-size: 3rem;
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: none;
+            background: transparent !important;
         }
 
         .f1 { top: 10%; left: 5%; color: var(--neon-green); animation: float 6s infinite; }
@@ -532,12 +538,23 @@
         }
 
         @media (max-width: 768px) {
-            .glitch { font-size: 2.5rem; }
-            .subtitle { font-size: 1.2rem; }
-            .container { padding: 6rem 1rem 1rem 1rem; }
+            .desktop-name { display: none; }
+            .mobile-name { display: inline; }
+            
+            .glitch { font-size: 2rem; letter-spacing: 2px; }
+            .subtitle { font-size: 1rem; }
+            .container { padding: 5rem 1rem 1rem 1rem; }
+            .card { padding: 1.5rem; }
+            
+            .navbar { padding: 0.8rem 1rem; }
+            .nav-brand { font-size: 1.5rem; letter-spacing: 1px; }
+            .btn-cv { padding: 0.4rem 0.8rem; font-size: 0.9rem; }
             .nav-links a:not(.btn-cv) { display: none; }
-            .spider-container { left: 5%; }
-            .creepy-cat { right: 10%; }
+            
+            .spider-container { left: 2%; }
+            .creepy-cat { right: 5%; font-size: 1.2rem; }
+            
+            .contact-links a { width: 40px; height: 40px; font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -551,7 +568,10 @@
         <div class="creepy-cat">
             <i class="fa-solid fa-cat"></i>
         </div>
-        <a href="#" class="nav-brand">Camila Olivares Arce</a>
+        <a href="#" class="nav-brand">
+            <span class="desktop-name">Camila Olivares Arce</span>
+            <span class="mobile-name">Camila O.</span>
+        </a>
         <div class="nav-links">
             <a href="#perfil">Perfil</a>
             <a href="#formacion">Formación</a>
