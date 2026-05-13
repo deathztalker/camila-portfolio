@@ -1280,9 +1280,15 @@
                     <div id="tab-history" class="tab-content">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--st-green); padding-bottom: 5px;">
                             <h3 style="color: var(--neon-green); font-family: 'Fredoka', sans-serif; margin:0; font-size: 1.1rem;">Pacientes Guardados</h3>
-                            <button id="btn-export-csv" class="btn-cv" style="padding: 5px 10px; font-size: 0.8rem; background: rgba(0,255,136,0.1); border-color: var(--neon-green); cursor: pointer;">
-                                Exportar Datos (.csv) <i class="fa-solid fa-download"></i>
-                            </button>
+                            <div style="display:flex; gap:5px;">
+                                <input type="file" id="h-import-csv" accept=".csv" style="display:none;">
+                                <button id="btn-trigger-import" class="btn-cv" style="padding: 5px 10px; font-size: 0.8rem; background: transparent; border-color: var(--punk-purple); color: var(--punk-purple); cursor: pointer;" title="Importar pacientes desde CSV">
+                                    <i class="fa-solid fa-upload"></i>
+                                </button>
+                                <button id="btn-export-csv" class="btn-cv" style="padding: 5px 10px; font-size: 0.8rem; background: rgba(0,255,136,0.1); border-color: var(--neon-green); cursor: pointer;">
+                                    Exportar <i class="fa-solid fa-download"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="nt-history">
                             <ul id="nt-history-list"></ul>
@@ -1410,6 +1416,60 @@
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+            });
+        }
+
+        // Import from CSV
+        const btnTriggerImport = document.getElementById('btn-trigger-import');
+        const hImportCsv = document.getElementById('h-import-csv');
+        
+        if(btnTriggerImport && hImportCsv) {
+            btnTriggerImport.addEventListener('click', () => hImportCsv.click());
+            
+            hImportCsv.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if(!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const content = evt.target.result;
+                    const lines = content.split('\n');
+                    if(lines.length < 2) return alert("El archivo está vacío o no es válido.");
+                    
+                    let importedCount = 0;
+                    const records = JSON.parse(localStorage.getItem('cesfamRecords') || '[]');
+                    
+                    for(let i = 1; i < lines.length; i++) {
+                        let row = lines[i].trim();
+                        if(!row) continue;
+                        
+                        if(row.startsWith('"')) row = row.substring(1);
+                        if(row.endsWith('"')) row = row.substring(0, row.length - 1);
+                        
+                        const cols = row.split('","');
+                        if(cols.length < 28) continue;
+                        
+                        records.push({
+                            name: cols[0], date: cols[1], age: cols[2], gender: cols[3], weight: cols[4],
+                            height: cols[5], waist: cols[6], imc: cols[7], status: cols[8], idealWeight: cols[9],
+                            cvRisk: cols[10], ict: cols[11], bp: cols[12], tmb: cols[13], kcal: cols[14],
+                            water: cols[15], macros: cols[16], fatPerc: cols[17], fatMass: cols[18], leanMass: cols[19],
+                            tfg: cols[20], kdigo: cols[21], pathologies: cols[22], allergies: cols[23], diet: cols[24],
+                            liquids: cols[25], digestion: cols[26], obs: cols[27]
+                        });
+                        importedCount++;
+                    }
+                    
+                    if(importedCount > 0) {
+                        localStorage.setItem('cesfamRecords', JSON.stringify(records));
+                        loadHistory();
+                        alert(`¡Se importaron ${importedCount} pacientes con éxito!`);
+                    } else {
+                        alert("No se pudieron importar pacientes. Verifica que sea el formato correcto.");
+                    }
+                    hImportCsv.value = "";
+                };
+                reader.readAsText(file, 'UTF-8');
             });
         }
 
