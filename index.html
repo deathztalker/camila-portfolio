@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camila Olivares | Nutricionista & Horror Punk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Creepster&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0f0f13;
+            --bg-card: rgba(25, 25, 30, 0.7);
+            --st-green: #00693E;
+            --neon-green: #00ff88;
+            --cute-pink: #ff99cc;
+            --punk-purple: #9d00ff;
+            --text-main: #e2e2e2;
+            --text-muted: #a0a0a0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 105, 62, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(157, 0, 255, 0.15) 0%, transparent 50%);
+            min-height: 100vh;
+        }
+
+        /* Glitch effect for Horror Punk vibe */
+        .glitch {
+            font-family: 'Creepster', cursive;
+            color: var(--neon-green);
+            font-size: 4rem;
+            position: relative;
+            text-shadow: 2px 2px var(--punk-purple), -2px -2px var(--cute-pink);
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.5rem;
+            color: var(--cute-pink);
+            text-align: center;
+            margin-top: -10px;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 2rem;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5), 0 0 40px rgba(255, 153, 204, 0.3);
+            animation: float 4s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
+        }
+
+        .avatar-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--punk-purple), var(--neon-green));
+            filter: blur(20px);
+            opacity: 0.6;
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 0.5; }
+        }
+
+        /* Cards (Glassmorphism) */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--st-green);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
+            border-left-color: var(--neon-green);
+        }
+
+        .section-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2rem;
+            color: var(--neon-green);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--cute-pink);
+        }
+
+        p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Timeline for Education/Experience */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin-top: 1.5rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: var(--st-green);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -36px;
+            top: 5px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--bg-dark);
+            border: 2px solid var(--neon-green);
+        }
+
+        .timeline-date {
+            font-size: 0.9rem;
+            color: var(--cute-pink);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .timeline-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Skills Tags */
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill-tag {
+            background: rgba(0, 105, 62, 0.2);
+            color: var(--neon-green);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            border: 1px solid var(--st-green);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .skill-tag:hover {
+            background: var(--neon-green);
+            color: var(--bg-dark);
+            transform: scale(1.05) rotate(-2deg);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+        }
+
+        .skill-tag.pink {
+            background: rgba(255, 153, 204, 0.1);
+            color: var(--cute-pink);
+            border-color: var(--cute-pink);
+        }
+        
+        .skill-tag.pink:hover {
+            background: var(--cute-pink);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px rgba(255, 153, 204, 0.4);
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        /* Floating elements (Ghosts, apples, crosses) */
+        .floating-icon {
+            position: absolute;
+            opacity: 0.15;
+            z-index: -1;
+            font-size: 3rem;
+        }
+
+        .f1 { top: 10%; left: 5%; color: var(--neon-green); animation: float 6s infinite; }
+        .f2 { top: 30%; right: 10%; color: var(--cute-pink); animation: float 5s infinite 1s; }
+        .f3 { bottom: 20%; left: 15%; color: var(--punk-purple); animation: float 7s infinite 2s; }
+        .f4 { bottom: 40%; right: 5%; color: white; animation: float 4s infinite 0.5s; font-size: 2rem;}
+
+        /* Contact */
+        .contact-links {
+            display: flex;
+            gap: 20px;
+            margin-top: 2rem;
+        }
+
+        .contact-links a {
+            color: var(--text-main);
+            font-size: 1.5rem;
+            background: rgba(255,255,255,0.05);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .contact-links a:hover {
+            background: var(--neon-green);
+            color: var(--bg-dark);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+        
+        .contact-links a:nth-child(2):hover {
+            background: var(--cute-pink);
+            box-shadow: 0 5px 15px rgba(255, 153, 204, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .glitch { font-size: 2.5rem; }
+            .subtitle { font-size: 1.2rem; }
+            .container { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <i class="fa-solid fa-ghost floating-icon f1"></i>
+    <i class="fa-solid fa-apple-whole floating-icon f2"></i>
+    <i class="fa-solid fa-skull floating-icon f3"></i>
+    <i class="fa-solid fa-staff-snake floating-icon f4"></i>
+
+    <div class="container">
+        <header class="hero">
+            <div class="avatar-container">
+                <div class="avatar-bg"></div>
+                <img src="camila_avatar.png" alt="Camila Olivares" class="avatar">
+            </div>
+            <h1 class="glitch">Camila Eugenia<br>Olivares Arce</h1>
+            <h2 class="subtitle">Nutricionista en Formación 🍏💀</h2>
+            
+            <div class="contact-links">
+                <a href="#" title="Email"><i class="fa-solid fa-envelope"></i></a>
+                <a href="#" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </header>
+
+        <section class="card">
+            <h2 class="section-title"><i class="fa-solid fa-heart-pulse"></i> Sobre Mí</h2>
+            <p>
+                ¡Hola! Soy Camila, actualmente cursando mi práctica / internado en la carrera de <strong>Nutrición y Dietética</strong> en la <strong>Universidad Santo Tomás</strong>. 
+            </p>
+            <p>
+                Combino mi pasión por la ciencia de la salud y el bienestar con mi amor por la estética <em>Horror Punk</em>, la buena música y, por supuesto, mi fanatismo por <strong>Pusheen el gato</strong>. Creo en una nutrición inclusiva, rebelde contra los mitos alimentarios y siempre con una actitud positiva (y un poco dark 🖤).
+            </p>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title"><i class="fa-solid fa-graduation-cap"></i> Formación y Experiencia</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">Actualidad</div>
+                    <div class="timeline-title">Internado / Práctica Profesional</div>
+                    <div class="timeline-subtitle">Universidad Santo Tomás</div>
+                    <p>Aplicando conocimientos clínicos y comunitarios en un entorno real. Evaluando pacientes, diseñando planes de alimentación y derribando barreras nutricionales con empatía y ciencia.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">En curso</div>
+                    <div class="timeline-title">Estudiante de Nutrición y Dietética</div>
+                    <div class="timeline-subtitle">Universidad Santo Tomás</div>
+                    <p>Formación integral en ciencias de la salud, bromatología, dietoterapia y salud pública. Destacando por la creatividad y el pensamiento crítico.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title"><i class="fa-solid fa-bolt"></i> Skills & Intereses</h2>
+            <div class="skills">
+                <span class="skill-tag">Evaluación Nutricional 🩺</span>
+                <span class="skill-tag">Dietoterapia 🥗</span>
+                <span class="skill-tag">Nutrición Comunitaria 🌍</span>
+                <span class="skill-tag">Salud Pública 🏥</span>
+                <span class="skill-tag pink">Horror Punk 🎸</span>
+                <span class="skill-tag pink">Pusheen Lover 🐾</span>
+                <span class="skill-tag pink">Misfits 💀</span>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Interactive glow effect following mouse on cards
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+                
+                card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(0, 255, 136, 0.05) 0%, rgba(25, 25, 30, 0.7) 50%)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.background = 'rgba(25, 25, 30, 0.7)';
+            });
+        });
+    </script>
+</body>
+</html>
