@@ -763,6 +763,60 @@
         }
         .project-card p { font-size: 0.95rem; margin: 0; }
 
+        /* Nutri-Tool Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            z-index: 9999; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .modal-content {
+            width: 90%; max-width: 400px;
+            background: var(--bg-card); border: 1px solid var(--neon-green);
+            box-shadow: 0 0 30px rgba(0,255,136,0.2);
+            position: relative; padding: 2rem; transform: scale(0.8); transition: all 0.3s ease;
+            max-height: 90vh; overflow-y: auto; cursor: auto;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        
+        .close-btn {
+            position: absolute; top: 15px; right: 15px; background: none; border: none;
+            color: var(--cute-pink); font-size: 1.5rem; transition: transform 0.3s;
+        }
+        .close-btn:hover { transform: rotate(90deg) scale(1.2); text-shadow: 0 0 10px var(--cute-pink); cursor: crosshair; }
+        
+        .input-group { margin-bottom: 1rem; width: 100%; text-align: left; }
+        .input-group label { display: block; color: var(--st-green); font-size: 0.9rem; margin-bottom: 5px; font-family: 'Fredoka', sans-serif;}
+        .input-group input { 
+            width: 100%; padding: 10px 12px; background: rgba(0,0,0,0.6); box-sizing: border-box;
+            border: 1px solid var(--punk-purple); color: white; border-radius: 4px;
+            font-family: 'Outfit', sans-serif; transition: all 0.3s;
+        }
+        .input-group input:focus { outline: none; border-color: var(--neon-green); box-shadow: 0 0 10px rgba(0,255,136,0.3); }
+
+        .nt-results { margin-top: 1.5rem; padding: 1rem; background: rgba(0,255,136,0.1); border-left: 4px solid var(--neon-green); border-radius: 4px;}
+        .nt-results h3 { color: var(--neon-green); margin-bottom: 10px; font-family: 'Fredoka', sans-serif;}
+        .nt-results p { margin: 5px 0; font-size: 1.1rem; font-family: 'Outfit', sans-serif;}
+
+        .nt-history { margin-top: 1.5rem; font-size: 0.9rem;}
+        .nt-history ul { list-style: none; padding: 0; margin: 0; }
+        .nt-history li { 
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); 
+            padding: 8px; margin-bottom: 8px; border-radius: 4px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nt-history li .delete-record { color: var(--cute-pink); cursor: crosshair; }
+
+        #open-nutritool {
+            background: transparent; border: 1px solid var(--neon-green);
+            color: var(--neon-green); border-radius: 50%; width: 40px; height: 40px;
+            display: flex; justify-content: center; align-items: center;
+            transition: all 0.3s; animation: pulse-node 2s infinite; cursor: crosshair;
+        }
+        #open-nutritool:hover { background: var(--neon-green); color: var(--bg-dark); transform: scale(1.1) rotate(15deg); box-shadow: 0 0 15px var(--neon-green); }
+
         .quote-section {
             text-align: center;
             padding: 4rem 1rem;
@@ -838,10 +892,15 @@
         <div class="creepy-cat">
             <i class="fa-solid fa-cat"></i>
         </div>
-        <a href="#" class="nav-brand">
-            <span class="desktop-name">Camila Olivares Arce</span>
-            <span class="mobile-name">Camila O.</span>
-        </a>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="#" class="nav-brand">
+                <span class="desktop-name">Camila Olivares Arce</span>
+                <span class="mobile-name">Camila O.</span>
+            </a>
+            <button id="open-nutritool" title="Escáner Nutricional">
+                <i class="fa-solid fa-vial-virus"></i>
+            </button>
+        </div>
         <div class="nav-links">
             <a href="#perfil">Perfil</a>
             <a href="#formacion">Formación</a>
@@ -961,6 +1020,49 @@
             </div>
         </section>
 
+        <!-- Nutri-Tool Modal -->
+        <div id="nutritool-modal" class="modal-overlay">
+            <div class="modal-content card">
+                <button id="close-nutritool" class="close-btn" title="Cerrar"><i class="fa-solid fa-xmark"></i></button>
+                <h2 class="section-title" style="margin-bottom: 1rem; font-size: 1.5rem;"><i class="fa-solid fa-vial-virus"></i> Escáner Vital IMC</h2>
+                
+                <div class="nutri-form">
+                    <div class="input-group">
+                        <label>Sujeto de Prueba</label>
+                        <input type="text" id="nt-name" placeholder="Ej. Zombi #42">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="input-group">
+                            <label>Masa (kg)</label>
+                            <input type="number" id="nt-weight" placeholder="0.0">
+                        </div>
+                        <div class="input-group">
+                            <label>Altura (cm)</label>
+                            <input type="number" id="nt-height" placeholder="0.0">
+                        </div>
+                    </div>
+                    
+                    <button id="nt-calculate" class="btn-cv" style="width: 100%; justify-content: center; margin-top: 10px; cursor: crosshair;">
+                        Escanear Mutación <i class="fa-solid fa-biohazard"></i>
+                    </button>
+                    
+                    <div id="nt-results" class="nt-results" style="display: none;">
+                        <h3>Reporte Bioquímico:</h3>
+                        <p>IMC Clínico: <strong id="nt-imc"></strong></p>
+                        <p>Diagnóstico: <strong id="nt-status"></strong></p>
+                        <button id="nt-save" class="btn-cv" style="width: 100%; justify-content: center; margin-top: 15px; background: rgba(157, 0, 255, 0.2); border-color: var(--punk-purple); color: var(--punk-purple) !important; cursor: crosshair;">
+                            Guardar en Archivo <i class="fa-solid fa-floppy-disk"></i>
+                        </button>
+                    </div>
+
+                    <div id="nt-history" class="nt-history">
+                        <h3 style="margin-top: 1.5rem; border-bottom: 1px solid var(--st-green); padding-bottom: 5px; color: var(--neon-green); font-family: 'Fredoka', sans-serif;">Archivos Cifrados (Local)</h3>
+                        <ul id="nt-history-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <footer>
             <p>© 2026 Camila Olivares Arce. Diseñado con <i class="fa-solid fa-heart"></i> y estética Horror Punk.</p>
         </footer>
@@ -980,6 +1082,80 @@
         }
         window.addEventListener("scroll", reveal);
         reveal();
+
+        // Nutri-Tool Logic
+        const modal = document.getElementById('nutritool-modal');
+        const btnOpen = document.getElementById('open-nutritool');
+        const btnClose = document.getElementById('close-nutritool');
+        const btnCalc = document.getElementById('nt-calculate');
+        const btnSave = document.getElementById('nt-save');
+        const historyList = document.getElementById('nt-history-list');
+
+        let currentResult = null;
+
+        if (btnOpen) btnOpen.addEventListener('click', () => modal.classList.add('active'));
+        if (btnClose) btnClose.addEventListener('click', () => modal.classList.remove('active'));
+        if (modal) modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('active'); });
+
+        function loadHistory() {
+            const records = JSON.parse(localStorage.getItem('nutriRecords') || '[]');
+            historyList.innerHTML = '';
+            records.forEach((rec, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span><i class="fa-solid fa-skull" style="color:var(--cute-pink);font-size:0.8rem"></i> <b>${rec.name}</b>: IMC ${rec.imc}</span> <i class="fa-solid fa-trash delete-record" title="Purgar Archivo" onclick="deleteRecord(${index})"></i>`;
+                historyList.appendChild(li);
+            });
+        }
+
+        window.deleteRecord = function(index) {
+            const records = JSON.parse(localStorage.getItem('nutriRecords') || '[]');
+            records.splice(index, 1);
+            localStorage.setItem('nutriRecords', JSON.stringify(records));
+            loadHistory();
+        };
+
+        if (btnCalc) {
+            btnCalc.addEventListener('click', () => {
+                const name = document.getElementById('nt-name').value || 'Sujeto Anónimo';
+                const w = parseFloat(document.getElementById('nt-weight').value);
+                const h = parseFloat(document.getElementById('nt-height').value) / 100;
+
+                if(!w || !h || w <= 0 || h <= 0) {
+                    alert("¡Error en escaneo! Ingresa masa y altura válidas.");
+                    return;
+                }
+
+                const imc = (w / (h * h)).toFixed(1);
+                let status = "";
+                let color = "";
+
+                if(imc < 18.5) { status = "Bajo Peso (Riesgo Zombi)"; color = "var(--cute-pink)"; }
+                else if(imc >= 18.5 && imc < 25) { status = "Normal (Superviviente)"; color = "var(--neon-green)"; }
+                else if(imc >= 25 && imc < 30) { status = "Sobrepeso (Mutación Leve)"; color = "var(--punk-purple)"; }
+                else { status = "Obesidad (Alerta Tóxica)"; color = "red"; }
+
+                document.getElementById('nt-imc').textContent = imc;
+                document.getElementById('nt-status').textContent = status;
+                document.getElementById('nt-status').style.color = color;
+                document.getElementById('nt-results').style.display = 'block';
+
+                currentResult = { name, imc, status };
+            });
+        }
+
+        if (btnSave) {
+            btnSave.addEventListener('click', () => {
+                if(!currentResult) return;
+                const records = JSON.parse(localStorage.getItem('nutriRecords') || '[]');
+                records.push(currentResult);
+                localStorage.setItem('nutriRecords', JSON.stringify(records));
+                loadHistory();
+                btnSave.innerHTML = '¡Archivo Cifrado! <i class="fa-solid fa-check"></i>';
+                setTimeout(() => { btnSave.innerHTML = 'Guardar en Archivo <i class="fa-solid fa-floppy-disk"></i>'; }, 2000);
+            });
+        }
+
+        loadHistory();
 
         // Cat Easter Egg (Clicking the navbar cat)
         const creepyCat = document.querySelector('.creepy-cat');
