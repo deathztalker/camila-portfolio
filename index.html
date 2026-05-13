@@ -475,6 +475,10 @@
             opacity: 0.15;
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-shadow: 0 0 10px currentColor;
+            background: transparent !important;
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: none;
         }
 
         /* Custom Cursor */
@@ -649,7 +653,7 @@
         const colors = ['var(--neon-green)', 'var(--cute-pink)', 'var(--punk-purple)', 'var(--st-green)'];
 
         const particles = [];
-        for(let i = 0; i < 30; i++) {
+        for(let i = 0; i < 75; i++) {
             const el = document.createElement('i');
             const icon = icons[Math.floor(Math.random() * icons.length)];
             el.className = `fa-solid ${icon} particle`;
