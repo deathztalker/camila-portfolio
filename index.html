@@ -1278,7 +1278,7 @@
 
                     <!-- TAB 5: Base de Datos -->
                     <div id="tab-history" class="tab-content">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--st-green); padding-bottom: 5px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--st-green); padding-bottom: 5px; flex-wrap: wrap; gap: 10px;">
                             <h3 style="color: var(--neon-green); font-family: 'Fredoka', sans-serif; margin:0; font-size: 1.1rem;">Pacientes Guardados</h3>
                             <div style="display:flex; gap:5px;">
                                 <input type="file" id="h-import-csv" accept=".csv" style="display:none;">
@@ -1289,6 +1289,9 @@
                                     Exportar <i class="fa-solid fa-download"></i>
                                 </button>
                             </div>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <input type="text" id="h-search-patient" placeholder="🔍 Buscar paciente por nombre, fecha o patología..." style="width: 100%; box-sizing: border-box; background: var(--bg-dark); border: 1px solid var(--st-green); color: white; padding: 10px; border-radius: 5px; font-family: 'Outfit', sans-serif;">
                         </div>
                         <div class="nt-history">
                             <ul id="nt-history-list"></ul>
@@ -1430,6 +1433,23 @@
                     </div>
                 `;
                 historyList.appendChild(li);
+            });
+        }
+
+        // Live Search History
+        const hSearchInput = document.getElementById('h-search-patient');
+        if(hSearchInput) {
+            hSearchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const listItems = document.querySelectorAll('#nt-history-list li');
+                listItems.forEach(li => {
+                    const text = li.innerText.toLowerCase();
+                    if(text.includes(term)) {
+                        li.style.display = '';
+                    } else {
+                        li.style.display = 'none';
+                    }
+                });
             });
         }
 
