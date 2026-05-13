@@ -1053,6 +1053,7 @@
                 
                 <div class="tool-tabs">
                     <button class="tab-btn active" data-target="tab-scanner"><i class="fa-solid fa-radar"></i> CESFAM</button>
+                    <button class="tab-btn" data-target="tab-anamnesis"><i class="fa-solid fa-clipboard-list"></i> Anamnesis</button>
                     <button class="tab-btn" data-target="tab-macros"><i class="fa-solid fa-chart-pie"></i> Macros</button>
                     <button class="tab-btn" data-target="tab-sports"><i class="fa-solid fa-dumbbell"></i> Deportiva</button>
                     <button class="tab-btn" data-target="tab-clinical"><i class="fa-solid fa-hospital"></i> Hospitalaria</button>
@@ -1138,6 +1139,48 @@
                             <button id="btn-clear-patient" class="btn-cv" style="flex:1; justify-content: center; background: rgba(255, 0, 85, 0.1); border-color: var(--cute-pink); color: var(--cute-pink) !important; cursor: pointer;">
                                 Limpiar <i class="fa-solid fa-eraser"></i>
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- TAB 1.5: ANAMNESIS Y ALERGIAS -->
+                    <div id="tab-anamnesis" class="tab-content">
+                        <h3 style="color:var(--neon-green); font-family:'Fredoka', sans-serif; margin-top:0;">Anamnesis Clínica y Alimentaria</h3>
+                        <div class="grid-inputs" style="grid-template-columns: 1fr 1fr;">
+                            <div class="input-group">
+                                <label>Patologías Base</label>
+                                <input type="text" id="a-pathology" placeholder="Ej. HTA, DM2, Hipotiroidismo...">
+                            </div>
+                            <div class="input-group">
+                                <label>Alergias / Intolerancias</label>
+                                <input type="text" id="a-allergies" placeholder="Ej. APLV, Celíaco, Lactosa...">
+                            </div>
+                            <div class="input-group">
+                                <label>Tipo de Dieta</label>
+                                <select id="a-diet" style="background: var(--bg-dark); color: white; border: 1px solid var(--st-green); padding: 8px; border-radius: 5px;">
+                                    <option value="Omnívora">Omnívora</option>
+                                    <option value="Vegetariana">Vegetariana</option>
+                                    <option value="Vegana">Vegana</option>
+                                    <option value="Pescatariana">Pescatariana</option>
+                                    <option value="Keto / Otra">Keto / Otra</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Consumo de Líquidos</label>
+                                <select id="a-liquids" style="background: var(--bg-dark); color: white; border: 1px solid var(--st-green); padding: 8px; border-radius: 5px;">
+                                    <option value="< 1 Litro (Bajo)">Menos de 1 Litro</option>
+                                    <option value="1 a 2 Litros (Adecuado)">1 a 2 Litros</option>
+                                    <option value="> 2 Litros (Alto)">Más de 2 Litros</option>
+                                    <option value="Principalmente Bebidas">Principalmente Bebidas Azucaradas</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group" style="margin-top: 10px;">
+                            <label>Tránsito Intestinal y Digestión</label>
+                            <input type="text" id="a-digestion" placeholder="Ej. Constipación (frecuencia), Reflujo, Normal...">
+                        </div>
+                        <div class="input-group" style="margin-top: 10px;">
+                            <label>Observaciones Alimentarias</label>
+                            <textarea id="a-obs" rows="2" style="width: 100%; box-sizing: border-box; background: var(--bg-dark); border: 1px solid var(--st-green); color: white; padding: 10px; border-radius: 5px; font-family: 'Outfit', sans-serif;" placeholder="Aversiones alimentarias, horarios de comida, uso de suplementos..."></textarea>
                         </div>
                     </div>
 
@@ -1264,7 +1307,8 @@
                     age: "-", gender: "-", weight: "-", height: "-", waist: "-", 
                     imc: "-", status: "-", idealWeight: "-", cvRisk: "-", ict: "-", 
                     tmb: "-", kcal: "-", water: "-", macros: "-", 
-                    fatPerc: "-", fatMass: "-", leanMass: "-", tfg: "-", kdigo: "-" 
+                    fatPerc: "-", fatMass: "-", leanMass: "-", tfg: "-", kdigo: "-",
+                    pathologies: "-", allergies: "-", diet: "-", liquids: "-", digestion: "-", obs: "-"
                 };
             }
         }
@@ -1308,10 +1352,10 @@
                 if(records.length === 0) return alert("No hay pacientes para exportar.");
                 
                 let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // BOM for UTF-8
-                csvContent += "Nombre,Fecha,Edad,Genero,Peso(kg),Altura(cm),Cintura(cm),IMC,Estado IMC,Peso Ideal(kg),Riesgo CV,ICT,TMB,Kcal Total,Agua,Macros(P/C/L),Grasa %,Masa Grasa(kg),Masa Magra(kg),TFG(ml/min),KDIGO\n";
+                csvContent += "Nombre,Fecha,Edad,Genero,Peso(kg),Altura(cm),Cintura(cm),IMC,Estado IMC,Peso Ideal(kg),Riesgo CV,ICT,TMB,Kcal Total,Agua,Macros(P/C/L),Grasa %,Masa Grasa(kg),Masa Magra(kg),TFG(ml/min),KDIGO,Patologias,Alergias,Dieta,Liquidos,Digestion,Observaciones\n";
                 
                 records.forEach(r => {
-                    const row = `"${r.name || '-'}","${r.date || '-'}","${r.age || '-'}","${r.gender || '-'}","${r.weight || '-'}","${r.height || '-'}","${r.waist || '-'}","${r.imc || '-'}","${r.status || '-'}","${r.idealWeight || '-'}","${r.cvRisk || '-'}","${r.ict || '-'}","${r.tmb || '-'}","${r.kcal || '-'}","${r.water || '-'}","${r.macros || '-'}","${r.fatPerc || '-'}","${r.fatMass || '-'}","${r.leanMass || '-'}","${r.tfg || '-'}","${r.kdigo || '-'}"`;
+                    const row = `"${r.name || '-'}","${r.date || '-'}","${r.age || '-'}","${r.gender || '-'}","${r.weight || '-'}","${r.height || '-'}","${r.waist || '-'}","${r.imc || '-'}","${r.status || '-'}","${r.idealWeight || '-'}","${r.cvRisk || '-'}","${r.ict || '-'}","${r.tmb || '-'}","${r.kcal || '-'}","${r.water || '-'}","${r.macros || '-'}","${r.fatPerc || '-'}","${r.fatMass || '-'}","${r.leanMass || '-'}","${r.tfg || '-'}","${r.kdigo || '-'}","${r.pathologies || '-'}","${r.allergies || '-'}","${r.diet || '-'}","${r.liquids || '-'}","${r.digestion || '-'}","${r.obs || '-'}"`;
                     csvContent += row + "\n";
                 });
 
@@ -1577,15 +1621,38 @@
             }
         }
 
+        // Anamnesis Logic
+        const anamnesisInputs = ['a-pathology', 'a-allergies', 'a-diet', 'a-liquids', 'a-digestion', 'a-obs'];
+        anamnesisInputs.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.addEventListener('input', updateAnamnesis);
+        });
+
+        function updateAnamnesis() {
+            initPatient();
+            currentPatient.pathologies = document.getElementById('a-pathology').value || "-";
+            currentPatient.allergies = document.getElementById('a-allergies').value || "-";
+            currentPatient.diet = document.getElementById('a-diet').value || "-";
+            currentPatient.liquids = document.getElementById('a-liquids').value || "-";
+            currentPatient.digestion = document.getElementById('a-digestion').value || "-";
+            currentPatient.obs = document.getElementById('a-obs').value.replace(/(\r\n|\n|\r)/gm, " ") || "-"; // CSV safe
+        }
+
         // Clear Patient
         const btnClearPatient = document.getElementById('btn-clear-patient');
         if(btnClearPatient) {
             btnClearPatient.addEventListener('click', () => {
-                document.querySelectorAll('.nutri-form input').forEach(inp => inp.value = '');
+                document.querySelectorAll('.nutri-form input, .nutri-form textarea').forEach(inp => inp.value = '');
                 document.getElementById('m-pro').value = '20';
                 document.getElementById('m-cho').value = '50';
                 document.getElementById('m-lip').value = '30';
                 document.getElementById('p-activity').value = '1.2';
+                
+                const selectDiet = document.getElementById('a-diet');
+                if(selectDiet) selectDiet.value = 'Omnívora';
+                const selectLiq = document.getElementById('a-liquids');
+                if(selectLiq) selectLiq.value = '< 1 Litro (Bajo)';
+
                 currentPatient = null;
                 calculateDashboard();
                 calculateSports();
