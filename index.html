@@ -134,6 +134,55 @@
             color: var(--cute-pink);
         }
 
+        /* Halloween Navbar Effects */
+        .spider-container {
+            position: absolute;
+            top: 0;
+            left: 20%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: spider-drop 12s infinite ease-in-out;
+            z-index: 1001;
+        }
+        
+        .spider-thread {
+            width: 1px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        .spider-container i {
+            color: var(--punk-purple);
+            font-size: 1.2rem;
+            margin-top: -2px;
+            filter: drop-shadow(0 0 5px var(--punk-purple));
+        }
+        
+        @keyframes spider-drop {
+            0%, 100% { transform: translateY(-70px); }
+            40%, 60% { transform: translateY(15px); }
+        }
+
+        .creepy-cat {
+            position: absolute;
+            bottom: -5px;
+            right: 25%;
+            color: var(--neon-green);
+            font-size: 1.5rem;
+            animation: cat-peek 8s infinite;
+            transform-origin: bottom center;
+            z-index: 1001;
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+        
+        @keyframes cat-peek {
+            0%, 75%, 100% { transform: translateY(30px) rotate(0deg); opacity: 0; }
+            80% { transform: translateY(0px) rotate(-15deg); opacity: 1; }
+            85% { transform: translateY(0px) rotate(15deg); opacity: 1; }
+            90% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+        }
+
         .btn-cv {
             background: rgba(0, 105, 62, 0.2);
             border: 1px solid var(--neon-green);
@@ -461,6 +510,13 @@
 <body>
 
     <nav class="navbar">
+        <div class="spider-container">
+            <div class="spider-thread"></div>
+            <i class="fa-solid fa-spider"></i>
+        </div>
+        <div class="creepy-cat">
+            <i class="fa-solid fa-cat"></i>
+        </div>
         <a href="#" class="nav-brand">Camila Olivares Arce</a>
         <div class="nav-links">
             <a href="#perfil">Perfil</a>
