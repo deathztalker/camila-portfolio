@@ -1802,11 +1802,22 @@
         const btnUseChumlea = document.getElementById('btn-use-chumlea');
         if(btnUseChumlea) {
             btnUseChumlea.addEventListener('click', () => {
-                const estH = document.getElementById('out-chumlea').innerText.replace(' cm', '');
+                const estH = document.getElementById('out-chumlea').innerText.replace(' cm', '').trim();
                 if(estH && estH !== '--') {
-                    document.getElementById('p-height').value = estH;
+                    const hInput = document.getElementById('p-height');
+                    hInput.value = estH;
                     calculateDashboard();
-                    alert("Talla estimada (Chumlea) copiada al Escáner Principal.");
+                    
+                    // Redirigir a la pestaña de Escáner
+                    const tabScanner = document.querySelector('[data-target="tab-scanner"]');
+                    if(tabScanner) tabScanner.click();
+
+                    // Feedback visual
+                    hInput.style.transition = "background-color 0.3s";
+                    hInput.style.backgroundColor = "rgba(0, 255, 136, 0.5)";
+                    setTimeout(() => hInput.style.backgroundColor = "var(--bg-dark)", 1000);
+                } else {
+                    alert("Por favor, ingresa primero la Altura de Rodilla.");
                 }
             });
         }
