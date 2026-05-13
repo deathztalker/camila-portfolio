@@ -1052,9 +1052,11 @@
                 <h2 class="section-title" style="margin-bottom: 0.5rem; font-size: 1.5rem;"><i class="fa-solid fa-laptop-medical"></i> Terminal Clínica CESFAM</h2>
                 
                 <div class="tool-tabs">
-                    <button class="tab-btn active" data-target="tab-scanner"><i class="fa-solid fa-radar"></i> Escáner Rápido</button>
+                    <button class="tab-btn active" data-target="tab-scanner"><i class="fa-solid fa-radar"></i> CESFAM</button>
                     <button class="tab-btn" data-target="tab-macros"><i class="fa-solid fa-chart-pie"></i> Macros</button>
-                    <button class="tab-btn" data-target="tab-history"><i class="fa-solid fa-server"></i> Base de Datos</button>
+                    <button class="tab-btn" data-target="tab-sports"><i class="fa-solid fa-dumbbell"></i> Deportiva</button>
+                    <button class="tab-btn" data-target="tab-clinical"><i class="fa-solid fa-hospital"></i> Hospitalaria</button>
+                    <button class="tab-btn" data-target="tab-history"><i class="fa-solid fa-server"></i> Historial</button>
                 </div>
 
                 <div class="nutri-form">
@@ -1128,9 +1130,14 @@
                             </div>
                         </div>
 
-                        <button id="btn-save-patient" class="btn-cv" style="width: 100%; justify-content: center; margin-top: 15px; background: rgba(0, 255, 136, 0.1); border-color: var(--neon-green); cursor: pointer;">
-                            Guardar Ficha de Paciente <i class="fa-solid fa-floppy-disk"></i>
-                        </button>
+                        <div style="display:flex; gap:10px; margin-top:15px;">
+                            <button id="btn-save-patient" class="btn-cv" style="flex:2; justify-content: center; background: rgba(0, 255, 136, 0.1); border-color: var(--neon-green); cursor: pointer;">
+                                Guardar Paciente <i class="fa-solid fa-floppy-disk"></i>
+                            </button>
+                            <button id="btn-clear-patient" class="btn-cv" style="flex:1; justify-content: center; background: rgba(255, 0, 85, 0.1); border-color: var(--cute-pink); color: var(--cute-pink) !important; cursor: pointer;">
+                                Limpiar <i class="fa-solid fa-eraser"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- TAB 2: MACROS -->
@@ -1160,7 +1167,37 @@
                         </div>
                     </div>
 
-                    <!-- TAB 3: Base de Datos -->
+                    <!-- TAB 3: DEPORTIVA -->
+                    <div id="tab-sports" class="tab-content">
+                        <h3 style="color:var(--neon-green); font-family:'Fredoka', sans-serif; margin-top:0;">Composición Corporal (Faulkner)</h3>
+                        <div class="grid-inputs">
+                            <div class="input-group"><label>Tríceps (mm)</label><input type="number" id="pl-tri" placeholder="0.0"></div>
+                            <div class="input-group"><label>Subescapular (mm)</label><input type="number" id="pl-sub" placeholder="0.0"></div>
+                            <div class="input-group"><label>Supraespinal (mm)</label><input type="number" id="pl-sup" placeholder="0.0"></div>
+                            <div class="input-group"><label>Abdominal (mm)</label><input type="number" id="pl-abd" placeholder="0.0"></div>
+                        </div>
+                        <div class="dashboard-results" style="grid-template-columns: 1fr 1fr 1fr;">
+                            <div class="res-box"><span>% Grasa</span><strong id="out-fat-perc">-- %</strong></div>
+                            <div class="res-box"><span>Masa Grasa</span><strong id="out-fat-mass">-- kg</strong></div>
+                            <div class="res-box"><span>Masa Magra</span><strong id="out-lean-mass">-- kg</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: HOSPITALARIA -->
+                    <div id="tab-clinical" class="tab-content">
+                        <h3 style="color:var(--neon-green); font-family:'Fredoka', sans-serif; margin-top:0;">Nutrición Clínica / Renal</h3>
+                        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Fórmula de Cockcroft-Gault para evaluar función renal (utiliza la edad, peso y género del panel principal).</p>
+                        <div class="input-group" style="width:100%; max-width:250px;">
+                            <label>Creatinina Sérica (mg/dL)</label>
+                            <input type="number" id="h-crea" placeholder="Ej. 1.2">
+                        </div>
+                        <div class="dashboard-results">
+                            <div class="res-box"><span>TFG (Clearance Creatinina)</span><strong id="out-tfg">-- ml/min</strong></div>
+                            <div class="res-box"><span>Etapa KDIGO</span><strong id="out-kdigo" style="font-size: 1.1rem; margin-top: 10px;">--</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 5: Base de Datos -->
                     <div id="tab-history" class="tab-content">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--st-green); padding-bottom: 5px;">
                             <h3 style="color: var(--neon-green); font-family: 'Fredoka', sans-serif; margin:0; font-size: 1.1rem;">Pacientes Guardados</h3>
@@ -1219,6 +1256,18 @@
         const historyList = document.getElementById('nt-history-list');
         let currentPatient = null;
 
+        function initPatient() {
+            if(!currentPatient) {
+                currentPatient = { 
+                    name: "Paciente Anónimo", date: new Date().toLocaleDateString(), 
+                    age: "-", gender: "-", weight: "-", height: "-", waist: "-", 
+                    imc: "-", status: "-", idealWeight: "-", cvRisk: "-", 
+                    tmb: "-", kcal: "-", water: "-", macros: "-", 
+                    fatPerc: "-", fatMass: "-", leanMass: "-", tfg: "-", kdigo: "-" 
+                };
+            }
+        }
+
         function loadHistory() {
             const records = JSON.parse(localStorage.getItem('cesfamRecords') || '[]');
             historyList.innerHTML = '';
@@ -1232,8 +1281,8 @@
                     <div style="flex-grow:1; line-height: 1.4;">
                         <strong style="color:var(--neon-green); font-family:'Fredoka',sans-serif; font-size:1.1rem;">${rec.name}</strong> <small style="color:var(--text-muted);">(${rec.date})</small><br>
                         <span style="font-size:0.85rem; color:white;">Edad: ${rec.age} | Peso: ${rec.weight}kg | Alt: ${rec.height}cm</span><br>
-                        <span style="font-size:0.85rem; color:white;">IMC: <b>${rec.imc}</b> (<span style="color:${rec.statusColor}">${rec.status}</span>)</span><br>
-                        <span style="font-size:0.85rem; color:var(--text-muted);">Ideal: ${rec.idealWeight}kg | Kcal: ${rec.kcal} | Agua: ${rec.water}</span>
+                        <span style="font-size:0.85rem; color:white;">IMC: <b>${rec.imc}</b> (${rec.status}) | Grasa: ${rec.fatPerc}%</span><br>
+                        <span style="font-size:0.85rem; color:var(--text-muted);">TFG: ${rec.tfg} (${rec.kdigo}) | Kcal: ${rec.kcal}</span>
                     </div>
                     <i class="fa-solid fa-trash delete-record" title="Eliminar Ficha" onclick="deleteRecord(${index})" style="padding:10px;"></i>
                 `;
@@ -1258,17 +1307,17 @@
                 if(records.length === 0) return alert("No hay pacientes para exportar.");
                 
                 let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // BOM for UTF-8
-                csvContent += "Nombre,Fecha,Edad,Genero,Peso(kg),Altura(cm),Cintura(cm),IMC,Estado IMC,Peso Ideal(kg),Riesgo CV,TMB,Kcal Total,Agua,Macros(P/C/L)\n";
+                csvContent += "Nombre,Fecha,Edad,Genero,Peso(kg),Altura(cm),Cintura(cm),IMC,Estado IMC,Peso Ideal(kg),Riesgo CV,TMB,Kcal Total,Agua,Macros(P/C/L),Grasa %,Masa Grasa(kg),Masa Magra(kg),TFG(ml/min),KDIGO\n";
                 
                 records.forEach(r => {
-                    const row = `"${r.name}","${r.date}","${r.age}","${r.gender}","${r.weight}","${r.height}","${r.waist}","${r.imc}","${r.status}","${r.idealWeight}","${r.cvRisk}","${r.tmb}","${r.kcal}","${r.water}","${r.macros}"`;
+                    const row = `"${r.name || '-'}","${r.date || '-'}","${r.age || '-'}","${r.gender || '-'}","${r.weight || '-'}","${r.height || '-'}","${r.waist || '-'}","${r.imc || '-'}","${r.status || '-'}","${r.idealWeight || '-'}","${r.cvRisk || '-'}","${r.tmb || '-'}","${r.kcal || '-'}","${r.water || '-'}","${r.macros || '-'}","${r.fatPerc || '-'}","${r.fatMass || '-'}","${r.leanMass || '-'}","${r.tfg || '-'}","${r.kdigo || '-'}"`;
                     csvContent += row + "\n";
                 });
 
                 const encodedUri = encodeURI(csvContent);
                 const link = document.createElement("a");
                 link.setAttribute("href", encodedUri);
-                link.setAttribute("download", `Pacientes_CESFAM_${new Date().toISOString().split('T')[0]}.csv`);
+                link.setAttribute("download", `Pacientes_MultiArea_${new Date().toISOString().split('T')[0]}.csv`);
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -1279,10 +1328,11 @@
         const scannerInputs = ['p-age', 'p-gender', 'p-weight', 'p-height', 'p-waist', 'p-activity'];
         scannerInputs.forEach(id => {
             const el = document.getElementById(id);
-            if(el) el.addEventListener('input', calculateDashboard);
+            if(el) el.addEventListener('input', () => { calculateDashboard(); calculateSports(); calculateClinical(); });
         });
 
         function calculateDashboard() {
+            initPatient();
             const name = document.getElementById('p-name').value || "Paciente Anónimo";
             const age = parseInt(document.getElementById('p-age').value) || 0;
             const gender = document.getElementById('p-gender').value;
@@ -1290,6 +1340,13 @@
             const h = parseFloat(document.getElementById('p-height').value) || 0;
             const waist = parseFloat(document.getElementById('p-waist').value) || 0;
             const act = parseFloat(document.getElementById('p-activity').value) || 1.2;
+
+            currentPatient.name = name;
+            if(age > 0) currentPatient.age = age;
+            currentPatient.gender = gender;
+            if(w > 0) currentPatient.weight = w;
+            if(h > 0) currentPatient.height = h;
+            if(waist > 0) currentPatient.waist = waist;
 
             // IMC & MINSAL Rules
             let imc = 0, imcStatus = "Incompleto", imcColor = "var(--text-muted)";
@@ -1312,6 +1369,9 @@
                 document.getElementById('out-imc-status').textContent = imcStatus;
                 document.getElementById('out-imc-status').style.color = imcColor;
                 document.getElementById('out-imc').style.color = imcColor;
+                
+                currentPatient.imc = imc.toFixed(1);
+                currentPatient.status = imcStatus;
             } else {
                 document.getElementById('out-imc').textContent = "--";
                 document.getElementById('out-imc-status').textContent = "Esperando datos...";
@@ -1330,6 +1390,7 @@
                 }
                 document.getElementById('out-ideal').textContent = idealWeight.toFixed(1) + " kg";
                 document.getElementById('out-ideal').style.color = "white";
+                currentPatient.idealWeight = idealWeight.toFixed(1);
             } else {
                 document.getElementById('out-ideal').textContent = "-- kg";
                 document.getElementById('out-ideal').style.color = "white";
@@ -1349,6 +1410,7 @@
                 }
                 document.getElementById('out-cv').textContent = cvStatus;
                 document.getElementById('out-cv').style.color = cvColor;
+                currentPatient.cvRisk = cvStatus;
             } else {
                 document.getElementById('out-cv').textContent = "--";
                 document.getElementById('out-cv').style.color = "white";
@@ -1366,6 +1428,9 @@
                 
                 // Autofill Macros
                 document.getElementById('m-kcal').value = totalKcal.toFixed(0);
+                
+                currentPatient.tmb = tmb.toFixed(0);
+                currentPatient.kcal = totalKcal.toFixed(0);
             } else {
                 document.getElementById('out-kcal').textContent = "-- kcal";
                 document.getElementById('out-kcal').style.color = "white";
@@ -1379,35 +1444,13 @@
                 waterText = `${water.toFixed(1)} L`;
                 document.getElementById('out-water').textContent = waterText;
                 document.getElementById('out-water').style.color = "#00d0ff"; // Blueish
+                currentPatient.water = waterText;
             } else {
                 document.getElementById('out-water').textContent = "-- L";
                 document.getElementById('out-water').style.color = "white";
             }
 
-            if(w > 0 && h > 0) {
-                currentPatient = {
-                    name: name,
-                    date: new Date().toLocaleDateString(),
-                    age: age,
-                    gender: gender,
-                    weight: w,
-                    height: h,
-                    waist: waist,
-                    imc: imc.toFixed(1),
-                    status: imcStatus,
-                    statusColor: imcColor,
-                    idealWeight: idealWeight > 0 ? idealWeight.toFixed(1) : "-",
-                    cvRisk: cvStatus,
-                    tmb: tmb > 0 ? tmb.toFixed(0) : "-",
-                    kcal: totalKcal > 0 ? totalKcal.toFixed(0) : "-",
-                    water: waterText,
-                    macros: ""
-                };
-            } else {
-                currentPatient = null;
-            }
-
-            calculateMacros(); // Update macros text
+            calculateMacros();
         }
 
         // Macros Logic
@@ -1418,6 +1461,7 @@
         });
 
         function calculateMacros() {
+            initPatient();
             const kcal = parseFloat(document.getElementById('m-kcal').value);
             const pPro = parseFloat(document.getElementById('m-pro').value) || 0;
             const pCho = parseFloat(document.getElementById('m-cho').value) || 0;
@@ -1435,9 +1479,7 @@
                 const macroText = `${gPro.toFixed(0)}g / ${gCho.toFixed(0)}g / ${gLip.toFixed(0)}g`;
                 document.getElementById('out-macro-sum').textContent = macroText;
                 
-                if(currentPatient) {
-                    currentPatient.macros = `PRO:${gPro.toFixed(0)}g CHO:${gCho.toFixed(0)}g LIP:${gLip.toFixed(0)}g`;
-                }
+                currentPatient.macros = macroText;
             } else {
                 document.getElementById('out-g-pro').textContent = "--";
                 document.getElementById('out-g-cho').textContent = "--";
@@ -1446,11 +1488,99 @@
             }
         }
 
+        // Sports Logic (Faulkner)
+        const sportsInp = ['pl-tri', 'pl-sub', 'pl-sup', 'pl-abd'];
+        sportsInp.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.addEventListener('input', calculateSports);
+        });
+
+        function calculateSports() {
+            initPatient();
+            const tri = parseFloat(document.getElementById('pl-tri').value) || 0;
+            const sub = parseFloat(document.getElementById('pl-sub').value) || 0;
+            const sup = parseFloat(document.getElementById('pl-sup').value) || 0;
+            const abd = parseFloat(document.getElementById('pl-abd').value) || 0;
+            const w = parseFloat(document.getElementById('p-weight').value) || 0;
+
+            if(tri > 0 && sub > 0 && sup > 0 && abd > 0 && w > 0) {
+                const fatPerc = ((tri + sub + sup + abd) * 0.153) + 5.783;
+                const fatMass = w * (fatPerc / 100);
+                const leanMass = w - fatMass;
+
+                document.getElementById('out-fat-perc').textContent = fatPerc.toFixed(1) + " %";
+                document.getElementById('out-fat-mass').textContent = fatMass.toFixed(1) + " kg";
+                document.getElementById('out-lean-mass').textContent = leanMass.toFixed(1) + " kg";
+                
+                currentPatient.fatPerc = fatPerc.toFixed(1);
+                currentPatient.fatMass = fatMass.toFixed(1);
+                currentPatient.leanMass = leanMass.toFixed(1);
+            } else {
+                document.getElementById('out-fat-perc').textContent = "-- %";
+                document.getElementById('out-fat-mass').textContent = "-- kg";
+                document.getElementById('out-lean-mass').textContent = "-- kg";
+            }
+        }
+
+        // Clinical Logic (Cockcroft-Gault)
+        const clinicInp = ['h-crea'];
+        clinicInp.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.addEventListener('input', calculateClinical);
+        });
+
+        function calculateClinical() {
+            initPatient();
+            const crea = parseFloat(document.getElementById('h-crea').value) || 0;
+            const age = parseInt(document.getElementById('p-age').value) || 0;
+            const w = parseFloat(document.getElementById('p-weight').value) || 0;
+            const gender = document.getElementById('p-gender').value;
+
+            if(crea > 0 && age > 0 && w > 0) {
+                let tfg = ((140 - age) * w) / (72 * crea);
+                if(gender === 'F') tfg = tfg * 0.85;
+
+                let kdigo = "";
+                if(tfg >= 90) kdigo = "G1 (Normal)";
+                else if(tfg >= 60) kdigo = "G2 (Ligeramente dism.)";
+                else if(tfg >= 45) kdigo = "G3a (Ligera-Mod.)";
+                else if(tfg >= 30) kdigo = "G3b (Mod.-Severa)";
+                else if(tfg >= 15) kdigo = "G4 (Severa)";
+                else kdigo = "G5 (Fallo Renal)";
+
+                document.getElementById('out-tfg').textContent = tfg.toFixed(1) + " ml/min";
+                document.getElementById('out-kdigo').textContent = kdigo;
+
+                currentPatient.tfg = tfg.toFixed(1);
+                currentPatient.kdigo = kdigo;
+            } else {
+                document.getElementById('out-tfg').textContent = "-- ml/min";
+                document.getElementById('out-kdigo').textContent = "--";
+            }
+        }
+
+        // Clear Patient
+        const btnClearPatient = document.getElementById('btn-clear-patient');
+        if(btnClearPatient) {
+            btnClearPatient.addEventListener('click', () => {
+                document.querySelectorAll('.nutri-form input').forEach(inp => inp.value = '');
+                document.getElementById('m-pro').value = '20';
+                document.getElementById('m-cho').value = '50';
+                document.getElementById('m-lip').value = '30';
+                document.getElementById('p-activity').value = '1.2';
+                currentPatient = null;
+                calculateDashboard();
+                calculateSports();
+                calculateClinical();
+            });
+        }
+
         // Save Patient
         const btnSavePatient = document.getElementById('btn-save-patient');
         if(btnSavePatient) {
             btnSavePatient.addEventListener('click', () => {
-                if(!currentPatient) return alert("Ingresa peso y altura válidos primero.");
+                const w = parseFloat(document.getElementById('p-weight').value) || 0;
+                if(w <= 0) return alert("Ingresa al menos el peso en la pestaña principal para guardar un paciente.");
                 
                 // Force name update on save in case they typed it last
                 currentPatient.name = document.getElementById('p-name').value || "Paciente Anónimo";
