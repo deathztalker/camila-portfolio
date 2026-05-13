@@ -1232,15 +1232,47 @@
 
                     <!-- TAB 4: HOSPITALARIA -->
                     <div id="tab-clinical" class="tab-content">
-                        <h3 style="color:var(--neon-green); font-family:'Fredoka', sans-serif; margin-top:0;">Nutrición Clínica / Renal</h3>
-                        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Fórmula de Cockcroft-Gault para evaluar función renal (utiliza la edad, peso y género del panel principal).</p>
-                        <div class="input-group" style="width:100%; max-width:250px;">
-                            <label>Creatinina Sérica (mg/dL)</label>
-                            <input type="number" id="h-crea" placeholder="Ej. 1.2">
+                        <h3 style="color:var(--neon-green); font-family:'Fredoka', sans-serif; margin-top:0;">Clínica y Paciente Postrado</h3>
+                        
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:15px;">
+                            <!-- Panel Renal -->
+                            <div style="background:var(--bg-dark); padding:10px; border:1px solid var(--st-green); border-radius:5px;">
+                                <h4 style="color:white; margin-top:0; font-size:0.95rem;">Filtración Renal (Cockcroft-Gault)</h4>
+                                <div class="input-group">
+                                    <label>Creatinina Sérica (mg/dL)</label>
+                                    <input type="number" id="h-crea" placeholder="Ej. 1.2">
+                                </div>
+                                <div style="margin-top:10px;">
+                                    <span style="font-size:0.85rem; color:var(--text-muted);">TFG: <b id="out-tfg" style="color:var(--neon-green);">--</b></span><br>
+                                    <span style="font-size:0.85rem; color:var(--text-muted);">KDIGO: <b id="out-kdigo" style="color:white;">--</b></span>
+                                </div>
+                            </div>
+
+                            <!-- Panel Chumlea -->
+                            <div style="background:var(--bg-dark); padding:10px; border:1px solid var(--st-green); border-radius:5px;">
+                                <h4 style="color:white; margin-top:0; font-size:0.95rem;">Talla Estimada (Chumlea)</h4>
+                                <div class="input-group">
+                                    <label>Altura de Rodilla (cm)</label>
+                                    <input type="number" id="h-knee" placeholder="Ej. 50">
+                                </div>
+                                <div style="margin-top:10px;">
+                                    <span style="font-size:0.85rem; color:var(--text-muted);">Talla: <b id="out-chumlea" style="color:var(--neon-green);">-- cm</b></span><br>
+                                    <button class="btn-cv" id="btn-use-chumlea" style="padding:2px 5px; font-size:0.7rem; margin-top:5px; background:transparent; border:1px solid var(--punk-purple); color:var(--punk-purple); cursor:pointer;">Usar en Escáner <i class="fa-solid fa-check"></i></button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="dashboard-results">
-                            <div class="res-box"><span>TFG (Clearance Creatinina)</span><strong id="out-tfg">-- ml/min</strong></div>
-                            <div class="res-box"><span>Etapa KDIGO</span><strong id="out-kdigo" style="font-size: 1.1rem; margin-top: 10px;">--</strong></div>
+
+                        <!-- Panel Pérdida de Peso -->
+                        <div style="background:var(--bg-dark); padding:10px; border:1px solid var(--st-green); border-radius:5px;">
+                            <h4 style="color:white; margin-top:0; font-size:0.95rem;">Screening: Riesgo por Pérdida de Peso</h4>
+                            <div class="input-group" style="max-width:200px;">
+                                <label>Peso Habitual / Histórico (kg)</label>
+                                <input type="number" id="h-usual-weight" placeholder="Ej. 70">
+                            </div>
+                            <div style="margin-top:10px;">
+                                <span style="font-size:0.85rem; color:var(--text-muted);">% de Pérdida Involuntaria: <b id="out-weight-loss" style="color:var(--neon-green);">-- %</b></span><br>
+                                <span style="font-size:0.85rem; color:var(--text-muted);">Riesgo Nutricional: <b id="out-loss-risk" style="color:white;">--</b></span>
+                            </div>
                         </div>
                     </div>
 
@@ -1439,7 +1471,7 @@
                 document.getElementById('out-imc').style.color = "white";
             }
 
-            // Peso Ideal (Lorentz/Broca)
+            // Peso Ideal (Lorentz/Broca) y Ajustado
             let idealWeight = 0;
             if(h > 0) {
                 if (h > 150) {
@@ -1448,7 +1480,14 @@
                 } else {
                     idealWeight = gender === 'M' ? (h - 100) : (h - 105);
                 }
-                document.getElementById('out-ideal').textContent = idealWeight.toFixed(1) + " kg";
+                
+                let idealText = idealWeight.toFixed(1) + " kg";
+                if(imc >= 30 && w > idealWeight) {
+                    const ajWeight = idealWeight + 0.25 * (w - idealWeight);
+                    idealText += `<br><span style="font-size:0.85rem; color:var(--neon-green);">Ajustado (Obesi): ${ajWeight.toFixed(1)} kg</span>`;
+                }
+                
+                document.getElementById('out-ideal').innerHTML = idealText;
                 document.getElementById('out-ideal').style.color = "white";
                 currentPatient.idealWeight = idealWeight.toFixed(1);
             } else {
@@ -1561,15 +1600,20 @@
             const pPro = parseFloat(document.getElementById('m-pro').value) || 0;
             const pCho = parseFloat(document.getElementById('m-cho').value) || 0;
             const pLip = parseFloat(document.getElementById('m-lip').value) || 0;
+            const w = parseFloat(document.getElementById('p-weight').value) || 0;
 
             if(kcal > 0 && Math.abs((pPro + pCho + pLip) - 100) < 0.1) {
                 const gPro = (kcal * (pPro / 100)) / 4;
                 const gCho = (kcal * (pCho / 100)) / 4;
                 const gLip = (kcal * (pLip / 100)) / 9;
 
-                document.getElementById('out-g-pro').textContent = gPro.toFixed(0) + " g";
-                document.getElementById('out-g-cho').textContent = gCho.toFixed(0) + " g";
-                document.getElementById('out-g-lip').textContent = gLip.toFixed(0) + " g";
+                let pkPro = w > 0 ? (gPro/w).toFixed(1) + " g/kg" : "";
+                let pkCho = w > 0 ? (gCho/w).toFixed(1) + " g/kg" : "";
+                let pkLip = w > 0 ? (gLip/w).toFixed(1) + " g/kg" : "";
+
+                document.getElementById('out-g-pro').innerHTML = `${gPro.toFixed(0)} g <br><small style="color:var(--neon-green)">${pkPro}</small>`;
+                document.getElementById('out-g-cho').innerHTML = `${gCho.toFixed(0)} g <br><small style="color:var(--neon-green)">${pkCho}</small>`;
+                document.getElementById('out-g-lip').innerHTML = `${gLip.toFixed(0)} g <br><small style="color:var(--neon-green)">${pkLip}</small>`;
 
                 const macroText = `${gPro.toFixed(0)}g / ${gCho.toFixed(0)}g / ${gLip.toFixed(0)}g`;
                 document.getElementById('out-macro-sum').textContent = macroText;
@@ -1617,40 +1661,91 @@
             }
         }
 
-        // Clinical Logic (Cockcroft-Gault)
-        const clinicInp = ['h-crea'];
+        // Clinical Logic
+        const clinicInp = ['h-crea', 'h-knee', 'h-usual-weight'];
         clinicInp.forEach(id => {
             const el = document.getElementById(id);
             if(el) el.addEventListener('input', calculateClinical);
         });
 
+        const btnUseChumlea = document.getElementById('btn-use-chumlea');
+        if(btnUseChumlea) {
+            btnUseChumlea.addEventListener('click', () => {
+                const estH = document.getElementById('out-chumlea').innerText.replace(' cm', '');
+                if(estH && estH !== '--') {
+                    document.getElementById('p-height').value = estH;
+                    calculateDashboard();
+                    alert("Talla estimada (Chumlea) copiada al Escáner Principal.");
+                }
+            });
+        }
+
         function calculateClinical() {
             initPatient();
             const crea = parseFloat(document.getElementById('h-crea').value) || 0;
+            const knee = parseFloat(document.getElementById('h-knee').value) || 0;
+            const uWeight = parseFloat(document.getElementById('h-usual-weight').value) || 0;
+            
             const age = parseInt(document.getElementById('p-age').value) || 0;
             const w = parseFloat(document.getElementById('p-weight').value) || 0;
             const gender = document.getElementById('p-gender').value;
 
+            // Renal: Cockcroft-Gault
             if(crea > 0 && age > 0 && w > 0) {
                 let tfg = ((140 - age) * w) / (72 * crea);
                 if(gender === 'F') tfg = tfg * 0.85;
-
+                
                 let kdigo = "";
-                if(tfg >= 90) kdigo = "G1 (Normal)";
-                else if(tfg >= 60) kdigo = "G2 (Ligeramente dism.)";
-                else if(tfg >= 45) kdigo = "G3a (Ligera-Mod.)";
-                else if(tfg >= 30) kdigo = "G3b (Mod.-Severa)";
-                else if(tfg >= 15) kdigo = "G4 (Severa)";
-                else kdigo = "G5 (Fallo Renal)";
+                let kColor = "white";
+                if(tfg >= 90) { kdigo = "G1 (Normal)"; kColor = "var(--neon-green)"; }
+                else if(tfg >= 60) { kdigo = "G2 (Leve)"; kColor = "var(--neon-green)"; }
+                else if(tfg >= 45) { kdigo = "G3a (Mod-Leve)"; kColor = "var(--punk-purple)"; }
+                else if(tfg >= 30) { kdigo = "G3b (Mod-Grave)"; kColor = "var(--punk-purple)"; }
+                else if(tfg >= 15) { kdigo = "G4 (Grave)"; kColor = "red"; }
+                else { kdigo = "G5 (Falla Renal)"; kColor = "red"; }
 
                 document.getElementById('out-tfg').textContent = tfg.toFixed(1) + " ml/min";
                 document.getElementById('out-kdigo').textContent = kdigo;
-
+                document.getElementById('out-kdigo').style.color = kColor;
+                
                 currentPatient.tfg = tfg.toFixed(1);
-                currentPatient.kdigo = kdigo;
+                currentPatient.kdigo = kdigo.split(' ')[0];
             } else {
-                document.getElementById('out-tfg').textContent = "-- ml/min";
+                document.getElementById('out-tfg').textContent = "--";
                 document.getElementById('out-kdigo').textContent = "--";
+                document.getElementById('out-kdigo').style.color = "white";
+            }
+
+            // Chumlea (Altura Rodilla)
+            if(knee > 0 && age > 0) {
+                let estHeight = 0;
+                if(gender === 'M') estHeight = 64.19 - (0.04 * age) + (2.02 * knee);
+                else estHeight = 84.88 - (0.24 * age) + (1.83 * knee);
+                document.getElementById('out-chumlea').textContent = estHeight.toFixed(1) + " cm";
+            } else {
+                document.getElementById('out-chumlea').textContent = "-- cm";
+            }
+
+            // Screening Pérdida de Peso
+            if(uWeight > 0 && w > 0 && uWeight > w) {
+                const lossPerc = ((uWeight - w) / uWeight) * 100;
+                document.getElementById('out-weight-loss').textContent = lossPerc.toFixed(1) + " %";
+                
+                let risk = "Leve";
+                let riskColor = "white";
+                if(lossPerc >= 10) { risk = "Severo (Riesgo Alto)"; riskColor = "red"; }
+                else if (lossPerc >= 5) { risk = "Moderado (Alerta)"; riskColor = "var(--punk-purple)"; }
+                
+                document.getElementById('out-loss-risk').textContent = risk;
+                document.getElementById('out-loss-risk').style.color = riskColor;
+            } else if (w >= uWeight && uWeight > 0) {
+                document.getElementById('out-weight-loss').textContent = "0 %";
+                document.getElementById('out-loss-risk').textContent = "Sin pérdida";
+                document.getElementById('out-loss-risk').style.color = "var(--neon-green)";
+            } else {
+                document.getElementById('out-weight-loss').textContent = "-- %";
+                document.getElementById('out-loss-risk').textContent = "--";
+                document.getElementById('out-loss-risk').style.color = "white";
             }
         }
 
