@@ -348,7 +348,7 @@
 
         .card:hover {
             transform: translateY(-8px) scale(1.01);
-            box-shadow: 0 15px 35px rgba(0, 255, 136, 0.15), 0 0 15px rgba(157, 0, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 255, 136, 0.15), 0 0 15px rgba(157, 0, 255, 0.1), inset 0 0 20px rgba(0, 255, 136, 0.05);
             border-left-color: var(--neon-green);
         }
 
@@ -420,6 +420,13 @@
             border: 3px solid var(--neon-green);
             box-shadow: 0 0 10px var(--neon-green), inset 0 0 5px var(--neon-green);
             transition: all 0.3s ease;
+            animation: pulse-node 2s infinite;
+        }
+
+        @keyframes pulse-node {
+            0% { box-shadow: 0 0 10px var(--neon-green), inset 0 0 5px var(--neon-green); }
+            50% { box-shadow: 0 0 20px var(--cute-pink), inset 0 0 10px var(--cute-pink); border-color: var(--cute-pink); }
+            100% { box-shadow: 0 0 10px var(--neon-green), inset 0 0 5px var(--neon-green); }
         }
 
         .timeline-item:hover::before {
@@ -672,20 +679,56 @@
         .subtitle {
             font-size: 1.5rem;
             color: var(--st-green);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .subtitle span {
             overflow: hidden;
             white-space: nowrap;
             border-right: 3px solid var(--neon-green);
-            width: 37ch;
-            animation: typing 3s steps(37) forwards, blink-caret 0.75s step-end infinite;
+            width: 27ch;
+            animation: typing 2.5s steps(27) forwards, blink-caret 0.75s step-end infinite;
+        }
+
+        .icon-pop {
+            opacity: 0;
+            transform: scale(0);
+            animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation-delay: 2.5s;
+        }
+        .icon-pop.delay { animation-delay: 2.8s; }
+        .icon-pop.fa-apple-whole { color: var(--neon-green); filter: drop-shadow(0 0 8px var(--neon-green)); }
+        .icon-pop.fa-skull { color: var(--cute-pink); filter: drop-shadow(0 0 8px var(--cute-pink)); }
+
+        @keyframes pop-in {
+            to { opacity: 1; transform: scale(1.2); }
         }
 
         @keyframes typing {
             from { width: 0 }
-            to { width: 37ch }
+            to { width: 27ch }
         }
         @keyframes blink-caret {
             from, to { border-color: transparent }
             50% { border-color: var(--neon-green) }
+        }
+
+        .scroll-indicator {
+            text-align: center;
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: var(--punk-purple);
+            animation: bounce 2s infinite;
+            opacity: 0.7;
+            filter: drop-shadow(0 0 5px var(--punk-purple));
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-15px); }
+            60% { transform: translateY(-7px); }
         }
         .project-icon {
             font-size: 2.5rem;
@@ -786,17 +829,24 @@
             <div class="avatar-container">
                 <div class="avatar-bg"></div>
                 <img src="camila_avatar.png" alt="Camila Olivares" class="avatar">
-            </div>
-            <h1 class="glitch" data-text="Camila Olivares Arce">Camila Olivares Arce</h1>
+            </div>            <h1 class="glitch" data-text="Camila Olivares Arce">Camila Olivares Arce</h1>
             <div class="subtitle-container">
-                <p class="subtitle">Nutrición, Ciencia y un poco de Caos</p>
+                <div class="subtitle">
+                    <span>Nutricionista en Formación</span>
+                    <i class="fa-solid fa-apple-whole icon-pop"></i>
+                    <i class="fa-solid fa-skull icon-pop delay"></i>
+                </div>
             </div>
             
             <div class="contact-links" style="justify-content: center;">
                 <a href="mailto:cammeeramone@gmail.com" class="email" title="Email"><i class="fa-solid fa-envelope"></i></a>
                 <a href="#" class="linkedin" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
                 <a href="https://wa.me/56950978738" class="whatsapp" title="WhatsApp" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
-                <a href="https://www.instagram.com/camidelosgatos" class="instagram" title="Instagram" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.instagram.com/camidelosgatos?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="instagram" title="Instagram" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+
+            <div class="scroll-indicator">
+                <i class="fa-solid fa-angles-down"></i>
             </div>
         </header>
 
