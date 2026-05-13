@@ -1055,9 +1055,9 @@
                     <button class="tab-btn active" data-target="tab-scanner"><i class="fa-solid fa-radar"></i> CESFAM</button>
                     <button class="tab-btn" data-target="tab-anamnesis"><i class="fa-solid fa-clipboard-list"></i> Anamnesis</button>
                     <button class="tab-btn" data-target="tab-macros"><i class="fa-solid fa-chart-pie"></i> Macros</button>
-                    <button class="tab-btn" data-target="tab-sports"><i class="fa-solid fa-dumbbell"></i> Deportiva</button>
-                    <button class="tab-btn" data-target="tab-clinical"><i class="fa-solid fa-hospital"></i> Hospitalaria</button>
-                    <button class="tab-btn" data-target="tab-history"><i class="fa-solid fa-server"></i> Historial</button>
+                    <button class="tab-btn" data-target="tab-clinical"><i class="fa-solid fa-hospital-user"></i> Clínica</button>
+                    <button class="tab-btn" data-target="tab-tables"><i class="fa-solid fa-table-list"></i> Tablas</button>
+                    <button class="tab-btn" data-target="tab-history"><i class="fa-solid fa-database"></i> Historial</button>
                 </div>
 
                 <div class="nutri-form">
@@ -1279,7 +1279,108 @@
                         </div>
                     </div>
 
-                    <!-- TAB 5: Base de Datos -->
+                    <!-- TAB 5: Tablas de Referencia -->
+                    <div id="tab-tables" class="tab-content">
+                        <h3 style="color:var(--neon-green); font-family:'Fredoka', sans-serif; margin-top:0;">Tablas de Referencia Clínica</h3>
+                        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Valores oficiales (MINSAL/OMS) para consulta rápida durante la atención.</p>
+                        
+                        <div style="background:var(--bg-dark); padding:10px; border:1px solid var(--st-green); border-radius:5px; margin-bottom:15px; overflow-x:auto;">
+                            <h4 style="color:white; margin-top:0; font-size:0.95rem;">Estado Nutricional (IMC)</h4>
+                            <table style="width:100%; border-collapse:collapse; font-size:0.8rem; text-align:left; color:white;">
+                                <thead>
+                                    <tr style="border-bottom:1px solid var(--st-green); color:var(--neon-green);">
+                                        <th style="padding:5px;">Diagnóstico</th>
+                                        <th style="padding:5px;">Adulto (18-64)</th>
+                                        <th style="padding:5px;">Adulto Mayor (65+)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                                        <td style="padding:5px;">Bajo Peso / Enflaquecido</td>
+                                        <td style="padding:5px;">< 18.5</td>
+                                        <td style="padding:5px;">< 23.0</td>
+                                    </tr>
+                                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                                        <td style="padding:5px;">Normal</td>
+                                        <td style="padding:5px;">18.5 - 24.9</td>
+                                        <td style="padding:5px;">23.0 - 27.9</td>
+                                    </tr>
+                                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                                        <td style="padding:5px;">Sobrepeso</td>
+                                        <td style="padding:5px;">25.0 - 29.9</td>
+                                        <td style="padding:5px;">28.0 - 31.9</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:5px; color:var(--cute-pink);">Obesidad</td>
+                                        <td style="padding:5px;">≥ 30.0</td>
+                                        <td style="padding:5px;">≥ 32.0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="background:var(--bg-dark); padding:10px; border:1px solid var(--st-green); border-radius:5px; margin-bottom:15px; overflow-x:auto;">
+                            <h4 style="color:white; margin-top:0; font-size:0.95rem;">Riesgo Cardiovascular (Cintura)</h4>
+                            <table style="width:100%; border-collapse:collapse; font-size:0.8rem; text-align:left; color:white;">
+                                <thead>
+                                    <tr style="border-bottom:1px solid var(--st-green); color:var(--neon-green);">
+                                        <th style="padding:5px;">Riesgo</th>
+                                        <th style="padding:5px;">Hombres</th>
+                                        <th style="padding:5px;">Mujeres</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                                        <td style="padding:5px;">Bajo Riesgo</td>
+                                        <td style="padding:5px;">< 90 cm</td>
+                                        <td style="padding:5px;">< 80 cm</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:5px; color:var(--cute-pink);">Alto Riesgo</td>
+                                        <td style="padding:5px;">≥ 90 cm</td>
+                                        <td style="padding:5px;">≥ 80 cm</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="background:var(--bg-dark); padding:10px; border:1px solid var(--st-green); border-radius:5px; overflow-x:auto;">
+                            <h4 style="color:white; margin-top:0; font-size:0.95rem;">Presión Arterial (HTA MINSAL)</h4>
+                            <table style="width:100%; border-collapse:collapse; font-size:0.8rem; text-align:left; color:white;">
+                                <thead>
+                                    <tr style="border-bottom:1px solid var(--st-green); color:var(--neon-green);">
+                                        <th style="padding:5px;">Categoría</th>
+                                        <th style="padding:5px;">PAS (Sistólica)</th>
+                                        <th style="padding:5px;">PAD (Diastólica)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                                        <td style="padding:5px;">Óptima</td>
+                                        <td style="padding:5px;">< 120</td>
+                                        <td style="padding:5px;">< 80</td>
+                                    </tr>
+                                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                                        <td style="padding:5px;">Normal</td>
+                                        <td style="padding:5px;">120 - 129</td>
+                                        <td style="padding:5px;">80 - 84</td>
+                                    </tr>
+                                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                                        <td style="padding:5px;">Normal Alta</td>
+                                        <td style="padding:5px;">130 - 139</td>
+                                        <td style="padding:5px;">85 - 89</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:5px; color:var(--cute-pink);">Hipertensión (HTA)</td>
+                                        <td style="padding:5px;">≥ 140</td>
+                                        <td style="padding:5px;">≥ 90</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TAB 6: Base de Datos -->
                     <div id="tab-history" class="tab-content">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--st-green); padding-bottom: 5px; flex-wrap: wrap; gap: 10px;">
                             <h3 style="color: var(--neon-green); font-family: 'Fredoka', sans-serif; margin:0; font-size: 1.1rem;">Pacientes Guardados</h3>
