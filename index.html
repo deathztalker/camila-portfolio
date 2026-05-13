@@ -44,6 +44,10 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 105, 62, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(157, 0, 255, 0.15) 0%, transparent 50%);
+            min-height: 100vh;
             position: relative;
         }
 
@@ -60,26 +64,34 @@
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15),
-                rgba(0, 0, 0, 0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.05"/></svg>');
             pointer-events: none;
-            z-index: 999;
-            opacity: 0.3;
+            z-index: 99;
+        }
+
+        /* Hero Section */
+        header {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
         }
 
         /* Glitch effect for Horror Punk vibe */
         .glitch {
             font-family: 'Creepster', cursive;
-            font-size: 4.5rem;
-            color: white;
+            color: var(--neon-green);
+            font-size: 4rem;
             position: relative;
-            text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75), -0.025em -0.05em 0 rgba(0, 255, 0, 0.75), 0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
-            animation: glitch 1s infinite;
+            text-shadow: 2px 2px var(--punk-purple), -2px -2px var(--cute-pink);
+            letter-spacing: 2px;
+            text-align: center;
             margin-bottom: 0.5rem;
             cursor: crosshair;
         }
@@ -101,9 +113,6 @@
         .subtitle {
             font-family: 'Fredoka', sans-serif;
             font-size: 1.5rem;
-            background: linear-gradient(90deg, var(--neon-green), var(--cute-pink), var(--punk-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             text-align: center;
             margin-top: -10px;
             margin-bottom: 2rem;
@@ -711,16 +720,8 @@
             white-space: nowrap;
             border-right: 3px solid var(--neon-green);
             width: 27ch;
-            background: linear-gradient(to right, var(--neon-green), var(--punk-purple), var(--cute-pink), var(--neon-green));
-            background-size: 300% auto;
-            color: transparent;
-            -webkit-background-clip: text;
-            background-clip: text;
-            animation: typing 2.5s steps(27) forwards, blink-caret 0.75s step-end infinite, color-shift 4s linear infinite;
-        }
-        
-        @keyframes color-shift {
-            to { background-position: 300% center; }
+            color: var(--st-green);
+            animation: typing 2.5s steps(27) forwards, blink-caret 0.75s step-end infinite;
         }
 
         .icon-pop {
@@ -874,7 +875,7 @@
             <div class="avatar-container">
                 <div class="avatar-bg"></div>
                 <img src="camila_avatar.png" alt="Camila Olivares" class="avatar">
-            </div>            <h1 class="glitch" data-text="Camila Olivares Arce">Camila Olivares Arce</h1>
+            </div>            <h1 class="glitch">Camila Eugenia<br>Olivares Arce</h1>
             <div class="subtitle-container">
                 <div class="subtitle">
                     <span>Nutricionista en Formación</span>
