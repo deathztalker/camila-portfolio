@@ -93,13 +93,27 @@
             align-items: center;
         }
         
+        * {
+            cursor: none !important; /* Custom horror cursor */
+        }
+
         .nav-brand {
             font-family: 'Creepster', cursive;
             color: var(--neon-green);
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             text-decoration: none;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px var(--punk-purple);
+            letter-spacing: 2px;
+            text-shadow: 2px 2px var(--punk-purple);
+            animation: horror-brand 3s infinite alternate;
+        }
+
+        @keyframes horror-brand {
+            0% { color: var(--neon-green); text-shadow: 2px 2px var(--punk-purple); transform: scale(1); }
+            33% { color: var(--cute-pink); text-shadow: -2px 2px var(--st-green); }
+            66% { color: var(--punk-purple); text-shadow: 2px -2px var(--neon-green); }
+            95% { transform: scale(1); filter: blur(0px); }
+            97% { transform: scale(1.05) skew(5deg); filter: blur(1px); color: white; }
+            100% { color: var(--neon-green); text-shadow: -2px -2px var(--punk-purple); transform: scale(1); filter: blur(0px); }
         }
 
         .nav-links {
@@ -386,6 +400,56 @@
             text-shadow: 0 0 10px currentColor;
         }
 
+        /* Custom Cursor */
+        #custom-cursor {
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 1.8rem;
+            animation: cursor-color 1s infinite alternate;
+            transform: translate(-30%, -20%);
+        }
+        
+        @keyframes cursor-color {
+            0% { color: var(--neon-green); filter: drop-shadow(0 0 8px var(--neon-green)); }
+            100% { color: var(--punk-purple); filter: drop-shadow(0 0 8px var(--punk-purple)); }
+        }
+
+        /* Boton Subir */
+        #btn-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(157, 0, 255, 0.2);
+            border: 2px solid var(--punk-purple);
+            color: var(--neon-green);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        #btn-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #btn-top:hover {
+            background: var(--punk-purple);
+            color: white;
+            box-shadow: 0 0 20px var(--neon-green);
+            transform: scale(1.1) translateY(-5px);
+            border-color: var(--neon-green);
+        }
+
         @media (max-width: 768px) {
             .glitch { font-size: 2.5rem; }
             .subtitle { font-size: 1.2rem; }
@@ -397,7 +461,7 @@
 <body>
 
     <nav class="navbar">
-        <a href="#" class="nav-brand">Camila O.</a>
+        <a href="#" class="nav-brand">Camila Olivares Arce</a>
         <div class="nav-links">
             <a href="#perfil">Perfil</a>
             <a href="#formacion">Formación</a>
@@ -519,13 +583,44 @@
             particlesContainer.appendChild(el);
         }
 
+        // Custom Cursor Logic
+        const cursor = document.createElement('i');
+        cursor.id = 'custom-cursor';
+        cursor.className = 'fa-solid fa-hand-pointer'; 
+        document.body.appendChild(cursor);
+
+        document.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Boton Subir Logic
+        const btnTop = document.createElement('button');
+        btnTop.id = 'btn-top';
+        btnTop.title = 'Subir';
+        btnTop.innerHTML = '<i class="fa-solid fa-chevron-up"></i>';
+        document.body.appendChild(btnTop);
+
+        btnTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
         window.addEventListener('scroll', () => {
             const scrolled = window.scrollY;
+            
+            // Particulas parallax
             particles.forEach(p => {
                 const currentY = scrolled * p.speed;
                 const currentRot = scrolled * p.rotSpeed;
                 p.el.style.transform = `translateY(${currentY}px) rotate(${currentRot}deg)`;
             });
+
+            // Mostrar/Ocultar boton subir
+            if (scrolled > 400) {
+                btnTop.classList.add('show');
+            } else {
+                btnTop.classList.remove('show');
+            }
         });
     </script>
 </body>
