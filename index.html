@@ -26,6 +26,7 @@
 
         html {
             scroll-behavior: smooth;
+            scroll-padding-top: 100px; /* Evita que el navbar superponga los títulos */
         }
         
         ::-webkit-scrollbar { width: 8px; }
@@ -37,6 +38,12 @@
             background: var(--neon-green);
             color: var(--bg-dark);
             text-shadow: none;
+        }
+
+        a:focus-visible, button:focus-visible {
+            outline: 2px dashed var(--cute-pink);
+            outline-offset: 5px;
+            border-radius: 4px;
         }
 
         body {
