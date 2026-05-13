@@ -1208,6 +1208,7 @@
                                 <input type="number" id="m-lip" value="30">
                             </div>
                         </div>
+                        <div style="text-align:right; font-size:0.85rem; margin-top:-10px; margin-bottom:15px; padding-right:5px;">Suma Total: <b id="m-sum-perc" style="color:var(--neon-green);">100%</b></div>
                         <div class="dashboard-results" style="grid-template-columns: 1fr 1fr 1fr;">
                             <div class="res-box"><span>Proteínas (4 kcal/g)</span><strong id="out-g-pro">-- g</strong></div>
                             <div class="res-box"><span>Carbohidratos (4 kcal/g)</span><strong id="out-g-cho">-- g</strong></div>
@@ -1224,7 +1225,8 @@
                             <div class="input-group"><label>Supraespinal (mm)</label><input type="number" id="pl-sup" placeholder="0.0"></div>
                             <div class="input-group"><label>Abdominal (mm)</label><input type="number" id="pl-abd" placeholder="0.0"></div>
                         </div>
-                        <div class="dashboard-results" style="grid-template-columns: 1fr 1fr 1fr;">
+                        <div class="dashboard-results" style="grid-template-columns: 1fr 1fr 1fr 1fr; margin-top:15px;">
+                            <div class="res-box"><span>∑ 4 Pliegues</span><strong id="out-sum-folds" style="color:#00d0ff;">-- mm</strong></div>
                             <div class="res-box"><span>% Grasa</span><strong id="out-fat-perc">-- %</strong></div>
                             <div class="res-box"><span>Masa Grasa</span><strong id="out-fat-mass">-- kg</strong></div>
                             <div class="res-box"><span>Masa Magra</span><strong id="out-lean-mass">-- kg</strong></div>
@@ -1276,6 +1278,25 @@
                             <div style="margin-top:10px;">
                                 <span style="font-size:0.85rem; color:var(--text-muted);">% de Pérdida Involuntaria: <b id="out-weight-loss" style="color:var(--neon-green);">-- %</b></span><br>
                                 <span style="font-size:0.85rem; color:var(--text-muted);">Riesgo Nutricional: <b id="out-loss-risk" style="color:white;">--</b></span>
+                            </div>
+                        </div>
+
+                        <!-- Panel Dosis Medicamentos/Suplementos -->
+                        <div style="background:var(--bg-dark); padding:10px; border:1px solid var(--punk-purple); border-radius:5px;">
+                            <h4 style="color:var(--cute-pink); margin-top:0; font-size:0.95rem;"><i class="fa-solid fa-pills"></i> Dosis (Fármaco/Suplemento)</h4>
+                            <p style="font-size:0.75rem; color:gray; margin-top:-5px;">Basado en el peso actual del paciente.</p>
+                            <div class="responsive-grid" style="gap:10px;">
+                                <div class="input-group">
+                                    <label>Dosis Prescrita (mg/kg)</label>
+                                    <input type="number" id="c-dosis" placeholder="Ej. 15">
+                                </div>
+                                <div class="input-group">
+                                    <label>Concentración (mg/ml)</label>
+                                    <input type="number" id="c-conc" placeholder="Ej. 50">
+                                </div>
+                            </div>
+                            <div style="margin-top:10px; text-align:center; background:rgba(157,0,255,0.1); padding:8px; border-radius:5px;">
+                                <span style="font-size:0.85rem; color:var(--text-muted);">Volumen a Administrar:<br><b id="out-dosis-vol" style="color:var(--cute-pink); font-size:1.3rem;">-- ml</b></span>
                             </div>
                         </div>
                     </div>
@@ -1465,7 +1486,7 @@
                     age: "-", gender: "-", weight: "-", height: "-", waist: "-", 
                     imc: "-", status: "-", idealWeight: "-", cvRisk: "-", ict: "-", bp: "-", 
                     tmb: "-", kcal: "-", water: "-", macros: "-", 
-                    fatPerc: "-", fatMass: "-", leanMass: "-", tfg: "-", kdigo: "-",
+                    fatPerc: "-", fatMass: "-", leanMass: "-", tfg: "-", kdigo: "-", medDosis: "-",
                     pathologies: "-", allergies: "-", diet: "-", liquids: "-", digestion: "-", obs: "-"
                 };
             }
@@ -1526,6 +1547,7 @@
                             <div><strong>Macros:</strong> ${rec.macros || '-'}</div>
                             <div><strong>Composición:</strong> Grasa ${rec.fatPerc || '-'}% | Magra ${rec.leanMass || '-'}kg</div>
                             <div><strong>Renal:</strong> TFG ${rec.tfg || '-'} (${rec.kdigo || '-'})</div>
+                            <div><strong>Dosis/Supl.:</strong> ${rec.medDosis || '-'}</div>
                             <div style="grid-column: 1 / -1; border-top: 1px dashed rgba(255,255,255,0.2); padding-top:5px; margin-top:5px;"><strong>Patologías:</strong> ${rec.pathologies || '-'}</div>
                             <div style="grid-column: 1 / -1;"><strong>Alergias:</strong> ${rec.allergies || '-'} | <strong>Dieta:</strong> ${rec.diet || '-'}</div>
                             <div style="grid-column: 1 / -1;"><strong>Tránsito/Líquidos:</strong> ${rec.digestion || '-'} / ${rec.liquids || '-'}</div>
@@ -1835,7 +1857,14 @@
             const pLip = parseFloat(document.getElementById('m-lip').value) || 0;
             const w = parseFloat(document.getElementById('p-weight').value) || 0;
 
-            if(kcal > 0 && Math.abs((pPro + pCho + pLip) - 100) < 0.1) {
+            const sum = pPro + pCho + pLip;
+            const elSum = document.getElementById('m-sum-perc');
+            if(elSum) {
+                elSum.textContent = sum.toFixed(1) + "%";
+                elSum.style.color = Math.abs(sum - 100) > 0.1 ? "var(--cute-pink)" : "var(--neon-green)";
+            }
+
+            if(kcal > 0 && Math.abs(sum - 100) < 0.1) {
                 const gPro = (kcal * (pPro / 100)) / 4;
                 const gCho = (kcal * (pCho / 100)) / 4;
                 const gLip = (kcal * (pLip / 100)) / 9;
@@ -1879,7 +1908,9 @@
                 const fatPerc = ((tri + sub + sup + abd) * 0.153) + 5.783;
                 const fatMass = w * (fatPerc / 100);
                 const leanMass = w - fatMass;
+                const sumFolds = tri + sub + sup + abd;
 
+                document.getElementById('out-sum-folds').textContent = sumFolds.toFixed(1) + " mm";
                 document.getElementById('out-fat-perc').textContent = fatPerc.toFixed(1) + " %";
                 document.getElementById('out-fat-mass').textContent = fatMass.toFixed(1) + " kg";
                 document.getElementById('out-lean-mass').textContent = leanMass.toFixed(1) + " kg";
@@ -1888,6 +1919,7 @@
                 currentPatient.fatMass = fatMass.toFixed(1);
                 currentPatient.leanMass = leanMass.toFixed(1);
             } else {
+                document.getElementById('out-sum-folds').textContent = "-- mm";
                 document.getElementById('out-fat-perc').textContent = "-- %";
                 document.getElementById('out-fat-mass').textContent = "-- kg";
                 document.getElementById('out-lean-mass').textContent = "-- kg";
@@ -1895,7 +1927,7 @@
         }
 
         // Clinical Logic
-        const clinicInp = ['h-crea', 'h-knee', 'h-usual-weight'];
+        const clinicInp = ['h-crea', 'h-knee', 'h-usual-weight', 'c-dosis', 'c-conc'];
         clinicInp.forEach(id => {
             const el = document.getElementById(id);
             if(el) el.addEventListener('input', calculateClinical);
@@ -1990,6 +2022,20 @@
                 document.getElementById('out-weight-loss').textContent = "-- %";
                 document.getElementById('out-loss-risk').textContent = "--";
                 document.getElementById('out-loss-risk').style.color = "white";
+            }
+            }
+
+            // Dosis Fármacos/Suplementos
+            const dosis = parseFloat(document.getElementById('c-dosis').value) || 0;
+            const conc = parseFloat(document.getElementById('c-conc').value) || 0;
+            
+            if(w > 0 && dosis > 0 && conc > 0) {
+                const vol = (w * dosis) / conc;
+                document.getElementById('out-dosis-vol').textContent = vol.toFixed(2) + " ml";
+                currentPatient.medDosis = `${vol.toFixed(2)} ml (${dosis}mg/kg)`;
+            } else {
+                document.getElementById('out-dosis-vol').textContent = "-- ml";
+                currentPatient.medDosis = "-";
             }
         }
 
