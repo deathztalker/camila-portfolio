@@ -315,6 +315,20 @@
             box-shadow: 0 5px 15px rgba(255, 153, 204, 0.3);
         }
 
+        #particles {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            opacity: 0.15;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-shadow: 0 0 10px currentColor;
+        }
+
         @media (max-width: 768px) {
             .glitch { font-size: 2.5rem; }
             .subtitle { font-size: 1.2rem; }
@@ -382,9 +396,6 @@
                 <span class="skill-tag">Nutrición Comunitaria 🌍</span>
                 <span class="skill-tag">Salud Pública 🏥</span>
                 <span class="skill-tag">Bromatología 🔬</span>
-                <span class="skill-tag pink">Arte Alternativo 🎸</span>
-                <span class="skill-tag pink">Estética Dark Kawaii 🦇</span>
-                <span class="skill-tag pink">Música Independiente 🎧</span>
             </div>
         </section>
     </div>
@@ -405,6 +416,44 @@
             
             card.addEventListener('mouseleave', () => {
                 card.style.background = 'rgba(25, 25, 30, 0.7)';
+            });
+        });
+
+        // Partículas Misfits x Nutrición con parallax al scrollear
+        const particlesContainer = document.createElement('div');
+        particlesContainer.id = 'particles';
+        document.body.prepend(particlesContainer);
+
+        const icons = ['fa-skull', 'fa-apple-whole', 'fa-staff-snake', 'fa-ghost', 'fa-leaf', 'fa-bolt', 'fa-heart-pulse'];
+        const colors = ['var(--neon-green)', 'var(--cute-pink)', 'var(--punk-purple)', 'var(--st-green)'];
+
+        const particles = [];
+        for(let i = 0; i < 30; i++) {
+            const el = document.createElement('i');
+            const icon = icons[Math.floor(Math.random() * icons.length)];
+            el.className = `fa-solid ${icon} particle`;
+            
+            const top = Math.random() * 150 - 25;
+            const left = Math.random() * 100;
+            
+            el.style.left = `${left}vw`;
+            el.style.top = `${top}vh`;
+            el.style.color = colors[Math.floor(Math.random() * colors.length)];
+            el.style.fontSize = `${Math.random() * 1.5 + 0.8}rem`;
+            
+            const speed = (Math.random() * 0.6 + 0.2) * (Math.random() > 0.5 ? 1 : -1);
+            const rotSpeed = (Math.random() * 0.8 + 0.2) * (Math.random() > 0.5 ? 1 : -1);
+            
+            particles.push({ el, top, left, speed, rotSpeed });
+            particlesContainer.appendChild(el);
+        }
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            particles.forEach(p => {
+                const currentY = scrolled * p.speed;
+                const currentRot = scrolled * p.rotSpeed;
+                p.el.style.transform = `translateY(${currentY}px) rotate(${currentRot}deg)`;
             });
         });
     </script>
