@@ -1143,15 +1143,6 @@
                                 <small style="color:var(--cute-pink)">Ir a Pestaña <i class="fa-solid fa-arrow-right"></i></small>
                             </div>
                         </div>
-
-                        <div style="display:flex; gap:10px; margin-top:15px;">
-                            <button id="btn-save-patient" class="btn-cv" style="flex:2; justify-content: center; background: rgba(0, 255, 136, 0.1); border-color: var(--neon-green); cursor: pointer;">
-                                Guardar Paciente <i class="fa-solid fa-floppy-disk"></i>
-                            </button>
-                            <button id="btn-clear-patient" class="btn-cv" style="flex:1; justify-content: center; background: rgba(255, 0, 85, 0.1); border-color: var(--cute-pink); color: var(--cute-pink) !important; cursor: pointer;">
-                                Limpiar <i class="fa-solid fa-eraser"></i>
-                            </button>
-                        </div>
                     </div>
 
                     <!-- TAB 1.5: ANAMNESIS Y ALERGIAS -->
@@ -1267,6 +1258,15 @@
                     </div>
 
                 </div>
+                
+                <div id="global-patient-actions" style="display:flex; gap:10px; margin-top:15px; padding-top: 15px; border-top: 1px solid var(--st-green);">
+                    <button id="btn-save-patient" class="btn-cv" style="flex:2; justify-content: center; background: rgba(0, 255, 136, 0.1); border-color: var(--neon-green); cursor: pointer;">
+                        Guardar Ficha <i class="fa-solid fa-floppy-disk"></i>
+                    </button>
+                    <button id="btn-clear-patient" class="btn-cv" style="flex:1; justify-content: center; background: rgba(255, 0, 85, 0.1); border-color: var(--cute-pink); color: var(--cute-pink) !important; cursor: pointer;">
+                        Limpiar <i class="fa-solid fa-eraser"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -1336,10 +1336,10 @@
                 const li = document.createElement('li');
                 li.innerHTML = `
                     <div style="flex-grow:1; line-height: 1.4;">
-                        <strong style="color:var(--neon-green); font-family:'Fredoka',sans-serif; font-size:1.1rem;">${rec.name}</strong> <small style="color:var(--text-muted);">(${rec.date})</small><br>
-                        <span style="font-size:0.85rem; color:white;">Edad: ${rec.age} | Peso: ${rec.weight}kg | Alt: ${rec.height}cm</span><br>
-                        <span style="font-size:0.85rem; color:white;">IMC: <b>${rec.imc}</b> (${rec.status}) | Grasa: ${rec.fatPerc}%</span><br>
-                        <span style="font-size:0.85rem; color:var(--text-muted);">TFG: ${rec.tfg} (${rec.kdigo}) | Kcal: ${rec.kcal}</span>
+                        <strong style="color:var(--neon-green); font-family:'Fredoka',sans-serif; font-size:1.1rem;">${rec.name || 'Paciente Anónimo'}</strong> <small style="color:var(--text-muted);">(${rec.date || '-'})</small><br>
+                        <span style="font-size:0.85rem; color:white;">Edad: ${rec.age || '-'} | Peso: ${rec.weight || '-'}kg | Alt: ${rec.height || '-'}cm</span><br>
+                        <span style="font-size:0.85rem; color:white;">IMC: <b>${rec.imc || '-'}</b> (${rec.status || '-'}) | Grasa: ${rec.fatPerc || '-'}%</span><br>
+                        <span style="font-size:0.85rem; color:var(--text-muted);">TFG: ${rec.tfg || '-'} (${rec.kdigo || '-'}) | Kcal: ${rec.kcal || '-'}</span>
                     </div>
                     <i class="fa-solid fa-trash delete-record" title="Eliminar Ficha" onclick="deleteRecord(${index})" style="padding:10px;"></i>
                 `;
@@ -1697,8 +1697,7 @@
         const btnSavePatient = document.getElementById('btn-save-patient');
         if(btnSavePatient) {
             btnSavePatient.addEventListener('click', () => {
-                const w = parseFloat(document.getElementById('p-weight').value) || 0;
-                if(w <= 0) return alert("Ingresa al menos el peso en la pestaña principal para guardar un paciente.");
+                if(!currentPatient) return alert("Nada que guardar.");
                 
                 // Force name update on save in case they typed it last
                 currentPatient.name = document.getElementById('p-name').value || "Paciente Anónimo";
