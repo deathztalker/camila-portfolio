@@ -44,11 +44,16 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(0, 105, 62, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 85% 30%, rgba(157, 0, 255, 0.15) 0%, transparent 50%);
-            min-height: 100vh;
             position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(transparent, transparent 2px, rgba(0, 255, 136, 0.03) 3px);
+            pointer-events: none;
+            z-index: 100;
         }
 
         body::after {
@@ -70,18 +75,35 @@
         /* Glitch effect for Horror Punk vibe */
         .glitch {
             font-family: 'Creepster', cursive;
-            color: var(--neon-green);
-            font-size: 4rem;
+            font-size: 4.5rem;
+            color: white;
             position: relative;
-            text-shadow: 2px 2px var(--punk-purple), -2px -2px var(--cute-pink);
-            letter-spacing: 2px;
-            text-align: center;
+            text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75), -0.025em -0.05em 0 rgba(0, 255, 0, 0.75), 0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+            animation: glitch 1s infinite;
+            margin-bottom: 0.5rem;
+            cursor: crosshair;
+        }
+
+        .glitch:hover {
+            animation: text-glitch-extreme 0.2s infinite;
+            color: var(--cute-pink);
+        }
+
+        @keyframes text-glitch-extreme {
+            0% { transform: translate(0) }
+            20% { transform: translate(-3px, 3px) skewX(10deg) }
+            40% { transform: translate(-3px, -3px) }
+            60% { transform: translate(3px, 3px) skewX(-10deg) }
+            80% { transform: translate(3px, -3px) }
+            100% { transform: translate(0) }
         }
 
         .subtitle {
             font-family: 'Fredoka', sans-serif;
             font-size: 1.5rem;
-            color: var(--cute-pink);
+            background: linear-gradient(90deg, var(--neon-green), var(--cute-pink), var(--punk-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-align: center;
             margin-top: -10px;
             margin-bottom: 2rem;
@@ -689,7 +711,16 @@
             white-space: nowrap;
             border-right: 3px solid var(--neon-green);
             width: 27ch;
-            animation: typing 2.5s steps(27) forwards, blink-caret 0.75s step-end infinite;
+            background: linear-gradient(to right, var(--neon-green), var(--punk-purple), var(--cute-pink), var(--neon-green));
+            background-size: 300% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: typing 2.5s steps(27) forwards, blink-caret 0.75s step-end infinite, color-shift 4s linear infinite;
+        }
+        
+        @keyframes color-shift {
+            to { background-position: 300% center; }
         }
 
         .icon-pop {
@@ -771,16 +802,21 @@
         .ecg-line {
             width: 100%;
             height: 50px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 50'%3E%3Cpath d='M0,25 L100,25 L120,5 L140,45 L160,25 L500,25' fill='none' stroke='%2300ff88' stroke-width='2' filter='drop-shadow(0 0 5px %2300ff88)'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 50'%3E%3Cpath d='M0,25 L100,25 L105,5 L115,45 L125,25 L300,25 L305,25 L315,5 L325,20 L335,5 L345,25 L500,25 L505,25 L515,45 L525,15 L535,45 L545,25 L700,25 L705,10 L715,45 L720,5 L730,40 L740,25 L900,25 L905,5 L915,25 L925,25 L935,5 L945,25 L1000,25' fill='none' stroke='%2300ff88' stroke-width='2.5' filter='drop-shadow(0 0 5px %2300ff88)' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E");
             background-repeat: repeat-x;
-            background-size: 500px 50px;
-            animation: ecg-move 2.5s linear infinite;
+            background-size: 1000px 50px;
+            animation: ecg-move 4s linear infinite;
             opacity: 0.8;
             margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        .ecg-line:hover {
+            filter: hue-rotate(90deg) brightness(1.5);
+            animation: ecg-move 1s linear infinite;
         }
         @keyframes ecg-move {
             from { background-position: 0 0; }
-            to { background-position: -500px 0; }
+            to { background-position: -1000px 0; }
         }
 
         footer {
@@ -793,7 +829,16 @@
             position: relative;
             z-index: 2;
         }
-        footer i { color: var(--cute-pink); animation: pulse 2s infinite; }
+        footer i { 
+            display: inline-block;
+            animation: horror-heart 1.5s infinite; 
+        }
+        @keyframes horror-heart {
+            0%, 100% { transform: scale(1) rotate(0deg); color: var(--neon-green); text-shadow: 0 0 5px var(--neon-green); }
+            25% { transform: scale(1.2) rotate(-10deg); color: var(--cute-pink); text-shadow: 0 0 10px var(--cute-pink); }
+            50% { transform: scale(1) rotate(0deg); color: var(--punk-purple); text-shadow: 0 0 5px var(--punk-purple); }
+            75% { transform: scale(1.2) rotate(10deg); color: black; text-shadow: 0 0 15px var(--neon-green); }
+        }
     </style>
 </head>
 <body>
