@@ -24,6 +24,10 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg-dark);
@@ -142,8 +146,20 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            animation: spider-drop 12s infinite ease-in-out;
+            animation: spider-drop 6s infinite ease-in-out;
             z-index: 1001;
+            cursor: none;
+        }
+
+        .spider-container:hover {
+            animation-play-state: paused;
+        }
+        
+        .spider-container:hover i {
+            color: var(--neon-green);
+            transform: scale(1.8) rotate(180deg);
+            transition: all 0.3s;
+            filter: drop-shadow(0 0 10px var(--neon-green));
         }
         
         .spider-thread {
@@ -157,6 +173,7 @@
             font-size: 1.2rem;
             margin-top: -2px;
             filter: drop-shadow(0 0 5px var(--punk-purple));
+            transition: all 0.3s;
         }
         
         @keyframes spider-drop {
@@ -170,16 +187,25 @@
             right: 25%;
             color: var(--neon-green);
             font-size: 1.5rem;
-            animation: cat-peek 8s infinite;
+            animation: cat-peek 5s infinite;
             transform-origin: bottom center;
             z-index: 1001;
             text-shadow: 0 0 10px var(--neon-green);
+            cursor: none;
+            transition: all 0.3s ease;
+        }
+
+        .creepy-cat:hover {
+            animation: none;
+            transform: translateY(-20px) scale(1.5);
+            color: var(--cute-pink);
+            text-shadow: 0 0 20px var(--cute-pink);
         }
         
         @keyframes cat-peek {
-            0%, 75%, 100% { transform: translateY(30px) rotate(0deg); opacity: 0; }
-            80% { transform: translateY(0px) rotate(-15deg); opacity: 1; }
-            85% { transform: translateY(0px) rotate(15deg); opacity: 1; }
+            0%, 60%, 100% { transform: translateY(30px) rotate(0deg); opacity: 0; }
+            70% { transform: translateY(0px) rotate(-15deg); opacity: 1; }
+            80% { transform: translateY(0px) rotate(15deg); opacity: 1; }
             90% { transform: translateY(0px) rotate(0deg); opacity: 1; }
         }
 
@@ -245,9 +271,11 @@
         }
 
         @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(3deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
+            0% { transform: translateY(0px) rotate(0deg); box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+            15% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.8), 0 0 60px rgba(255, 153, 204, 0.4); }
+            30% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+            50% { transform: translateY(-15px) rotate(3deg); box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+            100% { transform: translateY(0px) rotate(0deg); box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
         }
 
         @keyframes pulse {
@@ -504,6 +532,8 @@
             .subtitle { font-size: 1.2rem; }
             .container { padding: 6rem 1rem 1rem 1rem; }
             .nav-links a:not(.btn-cv) { display: none; }
+            .spider-container { left: 5%; }
+            .creepy-cat { right: 10%; }
         }
     </style>
 </head>
@@ -629,13 +659,14 @@
             
             el.style.left = `${left}vw`;
             el.style.top = `${top}vh`;
-            el.style.color = colors[Math.floor(Math.random() * colors.length)];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            el.style.color = color;
             el.style.fontSize = `${Math.random() * 1.5 + 0.8}rem`;
             
             const speed = (Math.random() * 0.6 + 0.2) * (Math.random() > 0.5 ? 1 : -1);
             const rotSpeed = (Math.random() * 0.8 + 0.2) * (Math.random() > 0.5 ? 1 : -1);
             
-            particles.push({ el, top, left, speed, rotSpeed });
+            particles.push({ el, top, left, speed, rotSpeed, originalColor: color, currentY: 0, currentRot: 0 });
             particlesContainer.appendChild(el);
         }
 
@@ -646,8 +677,27 @@
         document.body.appendChild(cursor);
 
         document.addEventListener('mousemove', e => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+            
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+            
+            // Efecto repulsión en las partículas
+            particles.forEach(p => {
+                const rect = p.el.getBoundingClientRect();
+                const dx = rect.left + rect.width / 2 - mouseX;
+                const dy = rect.top + rect.height / 2 - mouseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 80) {
+                    p.el.style.transform = `translate(${dx * 0.8}px, ${dy * 0.8}px) rotate(${p.currentRot}deg) scale(1.5)`;
+                    p.el.style.color = 'white';
+                } else {
+                    p.el.style.transform = `translateY(${p.currentY}px) rotate(${p.currentRot}deg) scale(1)`;
+                    p.el.style.color = p.originalColor;
+                }
+            });
         });
 
         // Boton Subir Logic
