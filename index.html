@@ -33,6 +33,23 @@
                 radial-gradient(circle at 15% 50%, rgba(0, 105, 62, 0.15) 0%, transparent 50%),
                 radial-gradient(circle at 85% 30%, rgba(157, 0, 255, 0.15) 0%, transparent 50%);
             min-height: 100vh;
+            position: relative;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.3;
         }
 
         /* Glitch effect for Horror Punk vibe */
@@ -125,14 +142,15 @@
             border-radius: 20px;
             padding: 2rem;
             margin-bottom: 2rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
             position: relative;
             overflow: hidden;
+            z-index: 10;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 15px 35px rgba(0, 255, 136, 0.15), 0 0 15px rgba(157, 0, 255, 0.1);
             border-left-color: var(--neon-green);
         }
 
@@ -328,12 +346,12 @@
         </header>
 
         <section class="card">
-            <h2 class="section-title"><i class="fa-solid fa-heart-pulse"></i> Sobre Mí</h2>
+            <h2 class="section-title"><i class="fa-solid fa-user-doctor"></i> Perfil Profesional</h2>
             <p>
-                ¡Hola! Soy Camila, actualmente cursando mi práctica / internado en la carrera de <strong>Nutrición y Dietética</strong> en la <strong>Universidad Santo Tomás</strong>. 
+                Nutricionista en formación por la <strong>Universidad Santo Tomás</strong>, actualmente desarrollando mi internado profesional. Me especializo en la evaluación clínica y el abordaje nutricional integral, promoviendo planes de alimentación adaptados y basados en evidencia científica.
             </p>
             <p>
-                Combino mi pasión por la ciencia de la salud y el bienestar con mi amor por la estética <em>Horror Punk</em>, la buena música y, por supuesto, mi fanatismo por <strong>Pusheen el gato</strong>. Creo en una nutrición inclusiva, rebelde contra los mitos alimentarios y siempre con una actitud positiva (y un poco dark 🖤).
+                Mi enfoque se centra en una nutrición empática, inclusiva y libre de estigmas, derribando mitos alimentarios para optimizar la salud integral del paciente. Destaco por mi capacidad de análisis clínico, vocación de servicio y proactividad. Fuera del ámbito clínico, encuentro inspiración en el arte alternativo y el diseño estético, lo que nutre mi creatividad para abordar de forma innovadora la educación en salud.
             </p>
         </section>
 
@@ -356,15 +374,17 @@
         </section>
 
         <section class="card">
-            <h2 class="section-title"><i class="fa-solid fa-bolt"></i> Skills & Intereses</h2>
+            <h2 class="section-title"><i class="fa-solid fa-dna"></i> Competencias Clínicas & Intereses</h2>
             <div class="skills">
                 <span class="skill-tag">Evaluación Nutricional 🩺</span>
-                <span class="skill-tag">Dietoterapia 🥗</span>
+                <span class="skill-tag">Dietoterapia del Adulto 🥗</span>
+                <span class="skill-tag">Educación Alimentaria 🍏</span>
                 <span class="skill-tag">Nutrición Comunitaria 🌍</span>
                 <span class="skill-tag">Salud Pública 🏥</span>
-                <span class="skill-tag pink">Horror Punk 🎸</span>
-                <span class="skill-tag pink">Pusheen Lover 🐾</span>
-                <span class="skill-tag pink">Misfits 💀</span>
+                <span class="skill-tag">Bromatología 🔬</span>
+                <span class="skill-tag pink">Arte Alternativo 🎸</span>
+                <span class="skill-tag pink">Estética Dark Kawaii 🦇</span>
+                <span class="skill-tag pink">Música Independiente 🎧</span>
             </div>
         </section>
     </div>
