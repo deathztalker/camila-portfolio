@@ -1106,16 +1106,25 @@
                                 <small id="out-imc-status">Esperando datos...</small>
                             </div>
                             <div class="res-box">
+                                <span>Peso Ideal</span>
+                                <strong id="out-ideal" style="font-size: 1.2rem; margin-top: 10px;">-- kg</strong>
+                            </div>
+                            <div class="res-box">
                                 <span>Riesgo Cardiovasc.</span>
                                 <strong id="out-cv" style="font-size: 1.2rem; margin-top: 10px;">--</strong>
                             </div>
                             <div class="res-box">
-                                <span>GEB / Gasto Total</span>
-                                <strong id="out-kcal" style="font-size: 1.1rem; margin-top: 10px;">-- / -- kcal</strong>
-                            </div>
-                            <div class="res-box">
                                 <span>Req. Hídrico</span>
                                 <strong id="out-water">-- L</strong>
+                            </div>
+                            <div class="res-box">
+                                <span>Gasto Total</span>
+                                <strong id="out-kcal" style="font-size: 1.2rem; margin-top: 10px;">-- kcal</strong>
+                            </div>
+                            <div class="res-box" style="cursor: pointer; background: rgba(157,0,255,0.1); border-bottom-color: var(--punk-purple);" onclick="document.querySelector('[data-target=\'tab-macros\']').click()">
+                                <span>Macros (PRO/CHO/LIP)</span>
+                                <strong id="out-macro-sum" style="font-size: 1rem; margin-top: 10px;">-- / -- / --</strong>
+                                <small style="color:var(--cute-pink)">Ir a Pestaña <i class="fa-solid fa-arrow-right"></i></small>
                             </div>
                         </div>
 
@@ -1153,6 +1162,12 @@
 
                     <!-- TAB 3: Base de Datos -->
                     <div id="tab-history" class="tab-content">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--st-green); padding-bottom: 5px;">
+                            <h3 style="color: var(--neon-green); font-family: 'Fredoka', sans-serif; margin:0; font-size: 1.1rem;">Pacientes Guardados</h3>
+                            <button id="btn-export-csv" class="btn-cv" style="padding: 5px 10px; font-size: 0.8rem; background: rgba(0,255,136,0.1); border-color: var(--neon-green); cursor: pointer;">
+                                Exportar Datos (.csv) <i class="fa-solid fa-download"></i>
+                            </button>
+                        </div>
                         <div class="nt-history">
                             <ul id="nt-history-list"></ul>
                         </div>
@@ -1216,8 +1231,9 @@
                 li.innerHTML = `
                     <div style="flex-grow:1; line-height: 1.4;">
                         <strong style="color:var(--neon-green); font-family:'Fredoka',sans-serif; font-size:1.1rem;">${rec.name}</strong> <small style="color:var(--text-muted);">(${rec.date})</small><br>
+                        <span style="font-size:0.85rem; color:white;">Edad: ${rec.age} | Peso: ${rec.weight}kg | Alt: ${rec.height}cm</span><br>
                         <span style="font-size:0.85rem; color:white;">IMC: <b>${rec.imc}</b> (<span style="color:${rec.statusColor}">${rec.status}</span>)</span><br>
-                        <span style="font-size:0.85rem; color:var(--text-muted);">Kcal Total: ${rec.kcal} | Agua: ${rec.water}</span>
+                        <span style="font-size:0.85rem; color:var(--text-muted);">Ideal: ${rec.idealWeight}kg | Kcal: ${rec.kcal} | Agua: ${rec.water}</span>
                     </div>
                     <i class="fa-solid fa-trash delete-record" title="Eliminar Ficha" onclick="deleteRecord(${index})" style="padding:10px;"></i>
                 `;
@@ -1226,11 +1242,38 @@
         }
 
         window.deleteRecord = function(index) {
-            const records = JSON.parse(localStorage.getItem('cesfamRecords') || '[]');
-            records.splice(index, 1);
-            localStorage.setItem('cesfamRecords', JSON.stringify(records));
-            loadHistory();
+            if(confirm("¿Seguro que deseas eliminar el registro de este paciente?")) {
+                const records = JSON.parse(localStorage.getItem('cesfamRecords') || '[]');
+                records.splice(index, 1);
+                localStorage.setItem('cesfamRecords', JSON.stringify(records));
+                loadHistory();
+            }
         };
+
+        // Export to CSV
+        const btnExportCsv = document.getElementById('btn-export-csv');
+        if(btnExportCsv) {
+            btnExportCsv.addEventListener('click', () => {
+                const records = JSON.parse(localStorage.getItem('cesfamRecords') || '[]');
+                if(records.length === 0) return alert("No hay pacientes para exportar.");
+                
+                let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // BOM for UTF-8
+                csvContent += "Nombre,Fecha,Edad,Genero,Peso(kg),Altura(cm),Cintura(cm),IMC,Estado IMC,Peso Ideal(kg),Riesgo CV,TMB,Kcal Total,Agua,Macros(P/C/L)\n";
+                
+                records.forEach(r => {
+                    const row = `"${r.name}","${r.date}","${r.age}","${r.gender}","${r.weight}","${r.height}","${r.waist}","${r.imc}","${r.status}","${r.idealWeight}","${r.cvRisk}","${r.tmb}","${r.kcal}","${r.water}","${r.macros}"`;
+                    csvContent += row + "\n";
+                });
+
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `Pacientes_CESFAM_${new Date().toISOString().split('T')[0]}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
 
         // Auto-calculate CESFAM Dashboard on input
         const scannerInputs = ['p-age', 'p-gender', 'p-weight', 'p-height', 'p-waist', 'p-activity'];
@@ -1241,21 +1284,21 @@
 
         function calculateDashboard() {
             const name = document.getElementById('p-name').value || "Paciente Anónimo";
-            const age = parseInt(document.getElementById('p-age').value);
+            const age = parseInt(document.getElementById('p-age').value) || 0;
             const gender = document.getElementById('p-gender').value;
-            const w = parseFloat(document.getElementById('p-weight').value);
-            const h = parseFloat(document.getElementById('p-height').value);
+            const w = parseFloat(document.getElementById('p-weight').value) || 0;
+            const h = parseFloat(document.getElementById('p-height').value) || 0;
             const waist = parseFloat(document.getElementById('p-waist').value) || 0;
-            const act = parseFloat(document.getElementById('p-activity').value);
+            const act = parseFloat(document.getElementById('p-activity').value) || 1.2;
 
             // IMC & MINSAL Rules
-            let imc = 0, imcStatus = "Datos Incompletos", imcColor = "var(--text-muted)";
+            let imc = 0, imcStatus = "Incompleto", imcColor = "var(--text-muted)";
             if(w > 0 && h > 0) {
                 const hM = h / 100;
                 imc = w / (hM * hM);
                 
                 if(age >= 65) {
-                    if(imc < 23) { imcStatus = "Enflaquecido (Riesgo)"; imcColor = "var(--cute-pink)"; }
+                    if(imc < 23) { imcStatus = "Enflaquecido"; imcColor = "var(--cute-pink)"; }
                     else if(imc < 28) { imcStatus = "Normal"; imcColor = "var(--neon-green)"; }
                     else if(imc < 32) { imcStatus = "Sobrepeso"; imcColor = "var(--punk-purple)"; }
                     else { imcStatus = "Obesidad"; imcColor = "red"; }
@@ -1274,6 +1317,22 @@
                 document.getElementById('out-imc-status').textContent = "Esperando datos...";
                 document.getElementById('out-imc-status').style.color = "var(--text-muted)";
                 document.getElementById('out-imc').style.color = "white";
+            }
+
+            // Peso Ideal (Lorentz/Broca)
+            let idealWeight = 0;
+            if(h > 0) {
+                if (h > 150) {
+                    if(gender === 'M') idealWeight = h - 100 - ((h - 150) / 4);
+                    else idealWeight = h - 100 - ((h - 150) / 2.5);
+                } else {
+                    idealWeight = gender === 'M' ? (h - 100) : (h - 105);
+                }
+                document.getElementById('out-ideal').textContent = idealWeight.toFixed(1) + " kg";
+                document.getElementById('out-ideal').style.color = "white";
+            } else {
+                document.getElementById('out-ideal').textContent = "-- kg";
+                document.getElementById('out-ideal').style.color = "white";
             }
 
             // Riesgo CV (Waist circumference)
@@ -1302,14 +1361,13 @@
                 else tmb = (10 * w) + (6.25 * h) - (5 * age) - 161;
                 
                 totalKcal = tmb * act;
-                document.getElementById('out-kcal').textContent = `${tmb.toFixed(0)} / ${totalKcal.toFixed(0)} kcal`;
+                document.getElementById('out-kcal').textContent = `${totalKcal.toFixed(0)} kcal`;
                 document.getElementById('out-kcal').style.color = "var(--cute-pink)";
                 
                 // Autofill Macros
                 document.getElementById('m-kcal').value = totalKcal.toFixed(0);
-                calculateMacros();
             } else {
-                document.getElementById('out-kcal').textContent = "-- / -- kcal";
+                document.getElementById('out-kcal').textContent = "-- kcal";
                 document.getElementById('out-kcal').style.color = "white";
             }
 
@@ -1330,37 +1388,26 @@
                 currentPatient = {
                     name: name,
                     date: new Date().toLocaleDateString(),
+                    age: age,
+                    gender: gender,
+                    weight: w,
+                    height: h,
+                    waist: waist,
                     imc: imc.toFixed(1),
                     status: imcStatus,
                     statusColor: imcColor,
-                    kcal: totalKcal > 0 ? `${totalKcal.toFixed(0)} kcal` : "-",
-                    water: waterText
+                    idealWeight: idealWeight > 0 ? idealWeight.toFixed(1) : "-",
+                    cvRisk: cvStatus,
+                    tmb: tmb > 0 ? tmb.toFixed(0) : "-",
+                    kcal: totalKcal > 0 ? totalKcal.toFixed(0) : "-",
+                    water: waterText,
+                    macros: ""
                 };
             } else {
                 currentPatient = null;
             }
-        }
 
-        // Save Patient
-        const btnSavePatient = document.getElementById('btn-save-patient');
-        if(btnSavePatient) {
-            btnSavePatient.addEventListener('click', () => {
-                if(!currentPatient) return alert("Ingresa peso y altura válidos primero.");
-                const records = JSON.parse(localStorage.getItem('cesfamRecords') || '[]');
-                records.push(currentPatient);
-                localStorage.setItem('cesfamRecords', JSON.stringify(records));
-                loadHistory();
-                
-                const originalText = btnSavePatient.innerHTML;
-                btnSavePatient.innerHTML = '¡Ficha Guardada con Éxito! <i class="fa-solid fa-check"></i>';
-                btnSavePatient.style.background = "var(--neon-green)";
-                btnSavePatient.style.color = "var(--bg-dark)";
-                setTimeout(() => { 
-                    btnSavePatient.innerHTML = originalText; 
-                    btnSavePatient.style.background = "rgba(0, 255, 136, 0.1)";
-                    btnSavePatient.style.color = "white";
-                }, 2000);
-            });
+            calculateMacros(); // Update macros text
         }
 
         // Macros Logic
@@ -1384,11 +1431,45 @@
                 document.getElementById('out-g-pro').textContent = gPro.toFixed(0) + " g";
                 document.getElementById('out-g-cho').textContent = gCho.toFixed(0) + " g";
                 document.getElementById('out-g-lip').textContent = gLip.toFixed(0) + " g";
+
+                const macroText = `${gPro.toFixed(0)}g / ${gCho.toFixed(0)}g / ${gLip.toFixed(0)}g`;
+                document.getElementById('out-macro-sum').textContent = macroText;
+                
+                if(currentPatient) {
+                    currentPatient.macros = `PRO:${gPro.toFixed(0)}g CHO:${gCho.toFixed(0)}g LIP:${gLip.toFixed(0)}g`;
+                }
             } else {
                 document.getElementById('out-g-pro').textContent = "--";
                 document.getElementById('out-g-cho').textContent = "--";
                 document.getElementById('out-g-lip').textContent = "--";
+                document.getElementById('out-macro-sum').textContent = "Revisar %";
             }
+        }
+
+        // Save Patient
+        const btnSavePatient = document.getElementById('btn-save-patient');
+        if(btnSavePatient) {
+            btnSavePatient.addEventListener('click', () => {
+                if(!currentPatient) return alert("Ingresa peso y altura válidos primero.");
+                
+                // Force name update on save in case they typed it last
+                currentPatient.name = document.getElementById('p-name').value || "Paciente Anónimo";
+                
+                const records = JSON.parse(localStorage.getItem('cesfamRecords') || '[]');
+                records.push(currentPatient);
+                localStorage.setItem('cesfamRecords', JSON.stringify(records));
+                loadHistory();
+                
+                const originalText = btnSavePatient.innerHTML;
+                btnSavePatient.innerHTML = '¡Ficha Guardada con Éxito! <i class="fa-solid fa-check"></i>';
+                btnSavePatient.style.background = "var(--neon-green)";
+                btnSavePatient.style.color = "var(--bg-dark)";
+                setTimeout(() => { 
+                    btnSavePatient.innerHTML = originalText; 
+                    btnSavePatient.style.background = "rgba(0, 255, 136, 0.1)";
+                    btnSavePatient.style.color = "white";
+                }, 2000);
+            });
         }
 
         loadHistory();
