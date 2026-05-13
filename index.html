@@ -1234,7 +1234,7 @@
                     <div id="tab-clinical" class="tab-content">
                         <h3 style="color:var(--neon-green); font-family:'Fredoka', sans-serif; margin-top:0;">Clínica y Paciente Postrado</h3>
                         
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:15px;">
+                        <div class="responsive-grid" style="margin-bottom:15px;">
                             <!-- Panel Renal -->
                             <div style="background:var(--bg-dark); padding:10px; border:1px solid var(--st-green); border-radius:5px;">
                                 <h4 style="color:white; margin-top:0; font-size:0.95rem;">Filtración Renal (Cockcroft-Gault)</h4>
@@ -1363,6 +1363,32 @@
             }
         }
 
+        window.toggleDetails = function(index) {
+            const det = document.getElementById('history-details-' + index);
+            const icon = document.getElementById('toggle-icon-' + index);
+            if(det.style.display === 'none') {
+                det.style.display = 'block';
+                if(icon) { icon.classList.remove('fa-chevron-down'); icon.classList.add('fa-chevron-up'); }
+            } else {
+                det.style.display = 'none';
+                if(icon) { icon.classList.remove('fa-chevron-up'); icon.classList.add('fa-chevron-down'); }
+            }
+        };
+
+        function generateClinicalSuggestion(rec) {
+            let sug = [];
+            if(rec.status && (rec.status.includes('Obeso') || rec.status.includes('Obesidad'))) sug.push("Evaluar déficit calórico. Fomentar actividad física y monitorear riesgo CV.");
+            else if(rec.status && (rec.status.includes('Bajo Peso') || rec.status.includes('Desnutrición'))) sug.push("Riesgo de malnutrición. Sugerir dieta hipercalórica e hiperproteica.");
+            
+            if(rec.cvRisk && rec.cvRisk.includes('Alto')) sug.push("Riesgo CV Alto. Énfasis en dieta cardioprotectora (baja en sodio/saturadas).");
+            if(rec.bp && (rec.bp.includes('HTA') || rec.bp.includes('Elevada'))) sug.push("Presión Arterial alterada. Considerar derivación médica y dieta DASH.");
+            if(rec.kdigo && (rec.kdigo.includes('G3') || rec.kdigo.includes('G4') || rec.kdigo.includes('G5'))) sug.push("Deterioro renal. Ajustar aporte proteico, fósforo y potasio según indicación.");
+            if(rec.pathologies && rec.pathologies !== '-' && rec.pathologies.toLowerCase().includes('dm')) sug.push("Diabético: Control estricto de CHO y Carga Glicémica.");
+            
+            if(sug.length === 0) return "Paciente compensado sin alertas críticas. Mantener controles preventivos.";
+            return sug.join(" ");
+        }
+
         function loadHistory() {
             const records = JSON.parse(localStorage.getItem('cesfamRecords') || '[]');
             historyList.innerHTML = '';
@@ -1372,14 +1398,36 @@
             }
             records.forEach((rec, index) => {
                 const li = document.createElement('li');
+                li.style.cssText = "background:var(--bg-lighter); margin-bottom:10px; border-radius:5px; border-left: 4px solid var(--neon-green); overflow:hidden;";
                 li.innerHTML = `
-                    <div style="flex-grow:1; line-height: 1.4;">
-                        <strong style="color:var(--neon-green); font-family:'Fredoka',sans-serif; font-size:1.1rem;">${rec.name || 'Paciente Anónimo'}</strong> <small style="color:var(--text-muted);">(${rec.date || '-'})</small><br>
-                        <span style="font-size:0.85rem; color:white;">Edad: ${rec.age || '-'} | Peso: ${rec.weight || '-'}kg | Alt: ${rec.height || '-'}cm</span><br>
-                        <span style="font-size:0.85rem; color:white;">IMC: <b>${rec.imc || '-'}</b> (${rec.status || '-'}) | Grasa: ${rec.fatPerc || '-'}%</span><br>
-                        <span style="font-size:0.85rem; color:var(--text-muted);">TFG: ${rec.tfg || '-'} (${rec.kdigo || '-'}) | Kcal: ${rec.kcal || '-'}</span>
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; cursor:pointer;" onclick="toggleDetails(${index})">
+                        <div style="flex-grow:1; line-height: 1.4;">
+                            <strong style="color:var(--neon-green); font-family:'Fredoka',sans-serif; font-size:1.1rem;">${rec.name || 'Paciente Anónimo'}</strong> <small style="color:var(--text-muted);">(${rec.date || '-'})</small><br>
+                            <span style="font-size:0.85rem; color:white;">IMC: <b>${rec.imc || '-'}</b> (${rec.status || '-'})</span>
+                        </div>
+                        <div style="display:flex; gap:15px; align-items:center;">
+                            <i class="fa-solid fa-chevron-down" id="toggle-icon-${index}" style="color:var(--neon-green);"></i>
+                            <i class="fa-solid fa-trash delete-record" title="Eliminar Ficha" onclick="event.stopPropagation(); deleteRecord(${index})" style="padding:5px; color:var(--cute-pink);"></i>
+                        </div>
                     </div>
-                    <i class="fa-solid fa-trash delete-record" title="Eliminar Ficha" onclick="deleteRecord(${index})" style="padding:10px;"></i>
+                    <div id="history-details-${index}" style="display:none; padding:15px; border-top:1px solid rgba(0,255,136,0.2); font-size:0.85rem; background: rgba(0,0,0,0.2); color:white;">
+                        <div class="responsive-grid" style="gap:10px; margin-bottom:15px;">
+                            <div><strong>Edad:</strong> ${rec.age || '-'} | <strong>Peso:</strong> ${rec.weight || '-'}kg | <strong>Alt:</strong> ${rec.height || '-'}cm</div>
+                            <div><strong>Presión:</strong> ${rec.bp || '-'} | <strong>Riesgo CV:</strong> ${rec.cvRisk || '-'}</div>
+                            <div><strong>Gasto:</strong> ${rec.kcal || '-'} | <strong>Agua:</strong> ${rec.water || '-'}</div>
+                            <div><strong>Macros:</strong> ${rec.macros || '-'}</div>
+                            <div><strong>Composición:</strong> Grasa ${rec.fatPerc || '-'}% | Magra ${rec.leanMass || '-'}kg</div>
+                            <div><strong>Renal:</strong> TFG ${rec.tfg || '-'} (${rec.kdigo || '-'})</div>
+                            <div style="grid-column: 1 / -1; border-top: 1px dashed rgba(255,255,255,0.2); padding-top:5px; margin-top:5px;"><strong>Patologías:</strong> ${rec.pathologies || '-'}</div>
+                            <div style="grid-column: 1 / -1;"><strong>Alergias:</strong> ${rec.allergies || '-'} | <strong>Dieta:</strong> ${rec.diet || '-'}</div>
+                            <div style="grid-column: 1 / -1;"><strong>Tránsito/Líquidos:</strong> ${rec.digestion || '-'} / ${rec.liquids || '-'}</div>
+                            <div style="grid-column: 1 / -1;"><strong>Obs:</strong> ${rec.obs || '-'}</div>
+                        </div>
+                        <div style="padding:10px; background:rgba(157,0,255,0.1); border-left:3px solid var(--punk-purple); border-radius:3px;">
+                            <strong style="color:var(--cute-pink); display:block; margin-bottom:3px;"><i class="fa-solid fa-robot"></i> Sugerencia IA Clínica:</strong> 
+                            ${generateClinicalSuggestion(rec)}
+                        </div>
+                    </div>
                 `;
                 historyList.appendChild(li);
             });
@@ -1854,6 +1902,9 @@
             btnSavePatient.addEventListener('click', () => {
                 if(!currentPatient) return alert("Nada que guardar.");
                 
+                // Ensure all fields from Anamnesis are captured even if they didn't trigger input event
+                updateAnamnesis();
+
                 // Force name update on save in case they typed it last
                 currentPatient.name = document.getElementById('p-name').value || "Paciente Anónimo";
                 
